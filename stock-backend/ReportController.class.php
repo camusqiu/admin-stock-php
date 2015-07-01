@@ -62,11 +62,7 @@ class ReportController extends CommonController {
             if($list[$i]['type'] == "1"){
                 $this->postName($list[$i]['ref_id']);
                 $list[$i]['content'] = $this->content;
-<<<<<<< HEAD
                 $list[$i]['url'] = "http://www.richba.com/post/detail/".$list[$i]['ref_id'].".html";
-=======
-                $list[$i]['url'] = "http://www.richba.com/article.html?id=".$list[$i]['ref_id'];
->>>>>>> FETCH_HEAD
             }else if($list[$i]['type'] == "2"){
                 $this->comment($list[$i]['ref_id']);
                 $list[$i]['content'] = $this->content;
@@ -127,11 +123,7 @@ class ReportController extends CommonController {
                     if($listTemp[$i]['type']=="1"){
                         $this->postName($listTemp[$i]['ref_id']);
                         $listTemp[$i]['content'] = $this->content;
-<<<<<<< HEAD
                         $listTemp[$i]['url'] = "http://www.richba.com/post/detail/".$listTemp[$i]['ref_id'].".html";
-=======
-                        $listTemp[$i]['url'] = "http://www.richba.com/article.html?id=".$listTemp[$i]['ref_id'];
->>>>>>> FETCH_HEAD
                     }else if($listTemp[$i]['type']=="3"){
                         $this->userName($listTemp[$i]['ref_id']);
                         $listTemp[$i]['content'] = $this->tipster_name;
@@ -170,13 +162,10 @@ class ReportController extends CommonController {
 
         $Model = M('Report');
 
-<<<<<<< HEAD
         $LData['table_name'] = "Report";
         $LData['type'] = 1;
         $LData['admin_id'] = $res_isLogin;
         
-=======
->>>>>>> FETCH_HEAD
         $list = $Model->where($condition)->select();
         if($state == "2" || $state == "4"){
             //print_r($list);
@@ -201,14 +190,11 @@ class ReportController extends CommonController {
                     $liststate = $Model->where($condition)->save($stateArray);
                 }
                 $tag = "1";
-<<<<<<< HEAD
 
                 $LData['code'] = 0;
                 $LData['msg'] = "举报解锁: id ".$uid." user_id ".$list[0]['be_tipster']." 已删除且锁定-->解除锁定状态";
                 aLog($LData);
 
-=======
->>>>>>> FETCH_HEAD
             }else if($list && $list[0]['state'] == "0" && $state == "2"){
                 //report表锁定为2   user表锁定为0 转化下           【锁定】
                 $stateTemp = "0";
@@ -226,14 +212,11 @@ class ReportController extends CommonController {
                     $liststate = $Model->where($condition)->save($stateArray);
                 }
                 $tag = "1";
-<<<<<<< HEAD
 
                 $LData['code'] = 0;
                 $LData['msg'] = "举报锁定: id ".$uid." user_id ".$list[0]['be_tipster']." 用户被锁定";
                 aLog($LData);
 
-=======
->>>>>>> FETCH_HEAD
             }else if($list && $list[0]['state'] == "2" && $state == "2"){
                 //解除锁定                                       【解锁】
                 $state = "0";
@@ -252,14 +235,11 @@ class ReportController extends CommonController {
                     $liststate = $Model->where($condition)->save($stateArray);
                 }
                 $tag = "1";
-<<<<<<< HEAD
 
                 $LData['code'] = 0;
                 $LData['msg'] = "举报解锁: id ".$uid." user_id ".$list[0]['be_tipster']." 解除锁定状态";
                 aLog($LData);
 
-=======
->>>>>>> FETCH_HEAD
             }else if($list && $list[0]['state'] == "1" && $state == "2"){
                 //已删除 继续锁定
                 $state = "2";
@@ -282,7 +262,6 @@ class ReportController extends CommonController {
                     $liststate = $Model->where($condition)->save($stateArray);
                 }
                 $tag = "1";
-<<<<<<< HEAD
 
                 $LData['code'] = 0;
                 $LData['msg'] = "举报锁定: id ".$uid." user_id ".$list[0]['be_tipster']." 已删除-->已删除且锁定";
@@ -299,11 +278,6 @@ class ReportController extends CommonController {
                 $LData['code'] = 0;
                 $LData['msg'] = "举报取消忽略: id ".$uid." 已忽略-->初始状态";
                 aLog($LData);
-=======
-            }else if($list && $list && $list[0]['state'] == "4"){
-                //状态为锁定和忽略都可逆，返回到未审核状态(无处理)
-                $state = "0";
->>>>>>> FETCH_HEAD
             }
         }else if($state == "1"){
             if($list && $list[0]['type'] == "1"){           //删除帖子
@@ -311,12 +285,9 @@ class ReportController extends CommonController {
             }else if($list && $list[0]['type'] == "2"){     //删除评论
                 //////$this->delPost($uid, $list[0]['user_id']);
             }
-<<<<<<< HEAD
             $LData['code'] = 0;
             $LData['msg'] = "举报锁定: id ".$uid." user_id ".$list[0]['be_tipster']." 已删除-->已删除且锁定";
             aLog($LData);
-=======
->>>>>>> FETCH_HEAD
         }
 
         if($tag == "1"){
@@ -325,19 +296,11 @@ class ReportController extends CommonController {
             $data['state'] = $state;
             $listTemp = $Model->where($condition)->save($data);
             if($listTemp || $listTemp == null){
-<<<<<<< HEAD
                 $code = 0;
                 $msg = "suc";
                 if($listTemp == null){
                    $listTemp = array();
                 }                
-=======
-              $code = 0;
-              $msg = "suc";
-              if($listTemp == null){
-                $listTemp = array();
-              }
->>>>>>> FETCH_HEAD
             }else{
               $code = -1;
               $msg = "audit sql failed";

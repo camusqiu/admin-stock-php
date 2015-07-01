@@ -157,24 +157,18 @@ class AbilityTagController extends CommonController {
     }
 
     public function addAbilityTag(){
-<<<<<<< HEAD
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
-=======
->>>>>>> FETCH_HEAD
 
         $name = I('param.name',-1);
         $Model = M('AbilityTag');
 
-<<<<<<< HEAD
         $LData['table_name'] = "AbilityTag";
         $LData['type'] = 2;
         $LData['admin_id'] = $res_isLogin;
 
-=======
->>>>>>> FETCH_HEAD
         if($name != "-1"){
             $listData['name'] = $name;
         }
@@ -187,13 +181,10 @@ class AbilityTagController extends CommonController {
                $list = Array();
             }
 
-<<<<<<< HEAD
             $LData['code'] = 0;
             $LData['msg'] = "AbilityTag:[用户标签: name ".$name." 创建成功]";
             aLog($LData);
 
-=======
->>>>>>> FETCH_HEAD
             $key = "sys_user_tag";
             $redis = S(array('type'=>'Redis'));
             $listTemp = $redis->del($key);
@@ -212,13 +203,10 @@ class AbilityTagController extends CommonController {
         $Model = M('AbilityTag');
         $ModelUserAbility = M('UserAbility');
 
-<<<<<<< HEAD
         $LData['table_name'] = "AbilityTag";
         $LData['type'] = 3;
         $LData['admin_id'] = $res_isLogin;
 
-=======
->>>>>>> FETCH_HEAD
         if($id != "-1"){
             $condition = "ability_tag_id='".$id."'";
         }
@@ -259,13 +247,10 @@ class AbilityTagController extends CommonController {
                    $list = Array();
                 }
 
-<<<<<<< HEAD
                 $LData['code'] = 0;
                 $LData['msg'] = "AbilityTag:[用户标签: id ".$id." 删除成功]";
                 aLog($LData);
 
-=======
->>>>>>> FETCH_HEAD
                 $key = "sys_user_tag";
                 $redis = S(array('type'=>'Redis'));
                 $listTemp = $redis->del($key);

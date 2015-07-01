@@ -21,7 +21,6 @@ class AppManagementController extends CommonController {
 
         $id = I('param.id',-1);
         $type = I('param.type',-1);
-<<<<<<< HEAD
         $page = I('param.page',-1);
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
@@ -30,12 +29,6 @@ class AppManagementController extends CommonController {
         if ($page == 2) {
             $Model = M('AppManagement');
         }
-=======
-        $this->curpage = I('param.curpage',1);
-        $this->pagenum = I('param.pagenum',10);
-
-        $Model = M('AppManagement');
->>>>>>> FETCH_HEAD
 
         $condition = "1=1";
         if($id && $id != "-1"){
@@ -66,11 +59,7 @@ class AppManagementController extends CommonController {
     //搜索公告记录
     public function searchAppNotice() {
         
-<<<<<<< HEAD
         $Model = M('Notice');
-=======
-        $Model = M('AppManagement');
->>>>>>> FETCH_HEAD
 
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
@@ -98,16 +87,12 @@ class AppManagementController extends CommonController {
 
      //添加公告记录
     public function addAppNotice() {
-<<<<<<< HEAD
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
 
         $Model = M('Notice');
-=======
-        $Model = M('AppManagement');
->>>>>>> FETCH_HEAD
 
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
@@ -115,13 +100,10 @@ class AppManagementController extends CommonController {
         $id = I('param.id',-1);
         $content = I('param.content',-1);
 
-<<<<<<< HEAD
         $LData['table_name'] = "Notice";
         $LData['type'] = 1;
         $LData['admin_id'] = $res_isLogin;
 
-=======
->>>>>>> FETCH_HEAD
         if($title != "-1"){
             $data['title'] = $title;
         }
@@ -132,19 +114,12 @@ class AppManagementController extends CommonController {
 
         if($id > "0"){
             $list = $Model->where("id='".$id."'")->save($data);
-<<<<<<< HEAD
             $LData['msg'] = "app系统公告: id ".$id." title [".$data['title']."] 公告修改成功";
         }else{
             $list = $Model->add($data);
             $LData['msg'] = "app系统公告: id ".$list." title [".$data['title']."] 公告发表成功";
         }
         aLog($LData);
-=======
-        }else{
-            $list = $Model->add($data);
-        }
-
->>>>>>> FETCH_HEAD
         if($list){
             $code = 0;
             $msg = "suc";
@@ -161,7 +136,6 @@ class AppManagementController extends CommonController {
 
      //修改状态
     public function delAppNotice() {
-<<<<<<< HEAD
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
@@ -171,23 +145,16 @@ class AppManagementController extends CommonController {
         $LData['type'] = 3;
         $LData['admin_id'] = $res_isLogin;
         
-=======
-        $Model = M('AppManagement');
-
->>>>>>> FETCH_HEAD
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
 
         $id = I('param.id',-1);
-<<<<<<< HEAD
         $page = I('param.page',-1);
 
         $Model = M('AppManagement');
         if ($page == 1) {
             $Model = M('Notice');
         }
-=======
->>>>>>> FETCH_HEAD
 
         $condition = "1=1";
         if($id && $id>=0){
@@ -199,17 +166,10 @@ class AppManagementController extends CommonController {
             if($listTemp){
                 $code = 0;
                 $msg = "suc";
-<<<<<<< HEAD
                 if($listTemp[0]['status'] == "0"){
                     $data['status'] = 1;
                 }else{
                     $data['status'] = 0;
-=======
-                if($listTemp[0]['state'] == "0"){
-                    $data['state'] = 1;
-                }else{
-                    $data['state'] = 0;
->>>>>>> FETCH_HEAD
                 }
            
                 $list = $Model->where("id='".$id."'")->save($data);
@@ -217,20 +177,12 @@ class AppManagementController extends CommonController {
                 if($list){
                     $code = 0;
                     $msg = "suc";
-<<<<<<< HEAD
                     $LData['msg'] = "AppManagement:[app系统公告: id ".$id." 删除公告成功]";
                 }else{
                     $code = 10001;
                     $msg = "id不存在";
                     $list = array();
                     $LData['msg'] = "AppManagement:[app系统公告: id ".$id." 不存在，删除公告失败]";
-=======
-               
-                }else{
-                    $code = 10001;
-                    $msg = "search user fail";
-                    $list = array();
->>>>>>> FETCH_HEAD
                 }
 
                 $this->ajaxOutput($code, $msg, array('count'=>count($list), 'list'=>$list));    

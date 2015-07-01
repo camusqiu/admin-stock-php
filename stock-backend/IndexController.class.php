@@ -8,28 +8,19 @@ use Home\Controller\CommonController;
 class IndexController extends CommonController {
     
 	public function getdata() {
-<<<<<<< HEAD
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
            $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
-=======
->>>>>>> FETCH_HEAD
         
         //当天时间
         $dateTime = date('ymd');
         $date = date('Y-m-d');
         $list['time'] = $date;
 
-<<<<<<< HEAD
         //用户发贴
         $ModelPost = M('Post'); 
         $postnum = $ModelPost->where(" type=1 and ctime>='".$dateTime."'")->count();    
-=======
-        //发表吧贴
-        $ModelPost = M('Post'); 
-        $postnum = $ModelPost->where("ctime>='".$dateTime."'")->count();    
->>>>>>> FETCH_HEAD
         $list['post'] = $postnum;
 
         //回复数
@@ -37,23 +28,16 @@ class IndexController extends CommonController {
         $commentnum = $ModelComment->where("modify_time>='".$dateTime."'")->count();    
         $list['respose'] = $commentnum;
 
-<<<<<<< HEAD
         //用户登录次数
-=======
-        //用户登录数
->>>>>>> FETCH_HEAD
         $ModelLogin = M('LoginStats'); 
         $loginnum = $ModelLogin->where("ctime>='".$dateTime."'")->count();    
         $list['login'] = $loginnum;
 
-<<<<<<< HEAD
 
         //用户登录个数
         $loginnumper = $ModelLogin->Distinct(true)->field('user_id')->where("ctime>='".$dateTime."'")->select();
         $list['loginPerson'] = count($loginnumper);
 
-=======
->>>>>>> FETCH_HEAD
         //用户举报次数
         $ModelReport = M('Report'); 
         $reportnum = $ModelReport->where("ctime>='".$dateTime."'")->count();    
@@ -96,7 +80,6 @@ class IndexController extends CommonController {
 
         $this->ajaxOutput(0, "suc", array('list'=>$list));    
     }
-<<<<<<< HEAD
 
 
     public function getFiveDayData() {
@@ -322,6 +305,4 @@ class IndexController extends CommonController {
 
         $this->ajaxOutput(0, "suc", array('list'=>$list));    
     }
-=======
->>>>>>> FETCH_HEAD
 }

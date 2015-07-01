@@ -4,7 +4,6 @@ use Think\Controller;
 import('Org.Util.Date');
 class FundManagementController extends CommonController {
     
-<<<<<<< HEAD
     //交易编号
     public function makeOrderCode($id){
         $id_str = str_pad(substr($id, -8), 8, "0", STR_PAD_LEFT);
@@ -13,8 +12,6 @@ class FundManagementController extends CommonController {
     }
 
 
-=======
->>>>>>> FETCH_HEAD
     //根据提款记录的状态筛选
     public function getFundList(){
         $res_isLogin = $this->isLogin();
@@ -22,7 +19,6 @@ class FundManagementController extends CommonController {
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
 
-<<<<<<< HEAD
         $pageName = I('param.pagename',-1);
         if($pageName != "-1"){
             $is_allow = pageAuthority($pageName, $res_isLogin);
@@ -62,39 +58,6 @@ class FundManagementController extends CommonController {
 
         $list = $ModelOrder->where($condition)->order('ctime desc')->page($this->curpage, $this->pagenum)->select();
 
-=======
-        $type = I('param.type',-1);
-        $this->curpage = I('param.curpage',1);
-        $this->pagenum = I('param.pagenum',10);
-        //$ctime = I('param.ctime',date('Y-m-d'));
-        //$ctimeend = I('param.ctimeend',date('Y-m-d'));
-
-        $Model = M('FundManagement');
-        $ModelUser = M('User');
-        
-        $pageName = I('param.pagename',-1);
-        if($pageName != "-1"){
-            $is_allow = pageAuthority($pageName, $res_isLogin);
-        }
-
-
-        $condition = "1=1";
-        if($type != "-1"){
-          $condition = $condition." and type='".$type."'";
-        }
-
-        if($ctime){
-          $condition = $condition." and ctime>='".$ctime."'";
-        }
-
-        if($ctimeend){
-          $condition = $condition." and ctime<='".$ctimeend." 23:59:59'";
-        }
-
-        $allnum = $Model->where($condition)->count();
-
-        $list = $Model->where($condition)->order('ctime desc')->page($this->curpage, $this->pagenum)->select();
->>>>>>> FETCH_HEAD
         if($list || $list == null){
           $code = 0;
           $msg = "suc";
@@ -103,7 +66,6 @@ class FundManagementController extends CommonController {
           }
 
           $num = count($list);
-<<<<<<< HEAD
 
 
           for($i=0; $i<$num; $i++){
@@ -127,14 +89,6 @@ class FundManagementController extends CommonController {
             //   $list[$i]['price'] = $listTempOrder[0]['price'];
             // }
 
-=======
-          for($i=0; $i<$num; $i++){
-            $condition = " id=".$list[$i]['user_id'];
-            $listTemp = $ModelUser->where($condition)->select();
-            if($listTemp){
-              $list[$i]['user_name'] = $listTemp[0]['name'];
-            }
->>>>>>> FETCH_HEAD
           }
 
         }else{
@@ -142,7 +96,6 @@ class FundManagementController extends CommonController {
           $msg = "sql failed";
         }
 
-<<<<<<< HEAD
         //今日付款
         $price['today'] = $this->getTodayPrice();
 
@@ -330,22 +283,12 @@ class FundManagementController extends CommonController {
 
 
 
-=======
-        if($is_allow == "1"){
-            $this->ajaxOutput(0, $msg, array('count'=>$allnum, 'list'=>$list));
-        }else{
-            $this->ajaxOutput(20402, 'user limited', array('count'=>$allnum, 'list'=>Array()));
-        }
-    }
-
->>>>>>> FETCH_HEAD
     //搜索提款记录
     public function searchUserFundInfo() {
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
-<<<<<<< HEAD
 
         $pageName = I('param.pagename',-1);
         if($pageName != "-1"){
@@ -356,9 +299,6 @@ class FundManagementController extends CommonController {
         }
 
         $Model = M('Order');
-=======
-        $Model = M('FundManagement');
->>>>>>> FETCH_HEAD
         $ModelUser = M('User');
 
         $this->curpage = I('param.curpage',1);
@@ -369,10 +309,6 @@ class FundManagementController extends CommonController {
             $this->condition = $this->condition." and name like '%".$title."%'";
         }
 
-<<<<<<< HEAD
-=======
-//        echo $this->condition;
->>>>>>> FETCH_HEAD
         $list = $ModelUser->where($this->condition)->select();
         if($list){
             $code = 0;
@@ -397,7 +333,6 @@ class FundManagementController extends CommonController {
         $this->ajaxOutput($code, $msg, array('count'=>count($listData), 'list'=>$listData));
     }    
 
-<<<<<<< HEAD
 
     public function delOrderList () {
         $res_isLogin = $this->isLogin();
@@ -627,7 +562,5 @@ class FundManagementController extends CommonController {
     //     } 
     //     fclose($fp); 
     // }
-=======
->>>>>>> FETCH_HEAD
 }
 ?>

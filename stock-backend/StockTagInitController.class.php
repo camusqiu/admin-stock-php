@@ -9,12 +9,9 @@ class StockTagInitController extends CommonController {
     /**
      * 登录。
      */
-<<<<<<< HEAD
 
     private $time = ''; 
 
-=======
->>>>>>> FETCH_HEAD
     public function getStockTag() {
         $codes = I('codes', -1);
         if($codes){
@@ -38,12 +35,9 @@ class StockTagInitController extends CommonController {
                 if($list == null){
                     $list = Array();
                 }
-<<<<<<< HEAD
                 // if($url && $url >= 0){
                 //     $arrayUrl = explode(";", $url);
                 // }
-=======
->>>>>>> FETCH_HEAD
             }else{
                 $list = Array();
                 $code = 20401;
@@ -54,7 +48,6 @@ class StockTagInitController extends CommonController {
     }
 
 
-<<<<<<< HEAD
     public function getStockTagName() {
         $codes = I('codes', -1);
         if($codes){
@@ -113,17 +106,10 @@ class StockTagInitController extends CommonController {
         $LData['admin_id'] = $res_isLogin;
         
         $ucode = I('code', -1);
-=======
-
-    public function updateStockHYGNTag(){
-        
-        $code = I('code', -1);
->>>>>>> FETCH_HEAD
         $strtag_id = I('strtag_id', -1);
         $hy = "";
         $gn = "";
 
-<<<<<<< HEAD
         if ($ucode == -1) {
             $this->ajaxOutput(-1, "参数错误", array('list'=>$list)); 
         }
@@ -392,60 +378,6 @@ class StockTagInitController extends CommonController {
             }
         }
         return "";
-=======
-        if($code != -1){
-            $tagModel = M('Tag');
-            $stockTagModel = M('StockTagInit');
-            $listTagInit = $stockTagModel->where("code='".$code."'")->select();
-            
-            if($listTagInit && $listTagInit != null){
-
-                $arrayTag = explode("_", $strtag_id);
-                for($i = 0; $i < count($arrayTag); $i++){
-
-                    $listTag = $tagModel->where("id='".$arrayTag[$i]."'")->select();
-                    if($listTag[0]['type'] == "1"){             //1为行业 2为概念
-                        $hy = $hy.$arrayTag[$i]."_";
-                    }else if($listTag[0]['type'] == "2"){   
-                        $gn = $gn.$arrayTag[$i]."_";
-                    }
-                }
-
-                //去掉尾部多余"_"
-                $data['hy_tag'] = substr($hy, 0, -1);
-                $data['gn_tag'] = substr($gn, 0, -1);
-
-                //echo "hy:".$data['hy_tag']."| gn:".$data['gn_tag']."\n";
-                if($listTagInit == null){                           //没有初始化化则新增
-                    $listTagAdd = $stockTagModel->add($data);
-                }else{                                              //修改初始化记录
-                    $listTagAdd = $stockTagModel->where("code='".$code."'")->save($data);
-                }
-                if($listTagAdd || $listTagAdd == null){
-                    $code = 0;
-                    $msg = "add suc";
-                    if($listTagAdd == null){
-                        $listTagAdd = array();
-                    }
-                }else{
-                     $code = 20401;
-                     $msg = "code not found in tag";
-                     $list = array();
-                }
-                $this->ajaxOutput($code, $msg, array('list'=>$listTagAdd));    
-            }else{
-                $code = 20401;
-                $msg = "code not found in stocktaginit";
-                $list = array();
-            }
-        }else{
-            $code = -1;
-            $msg = "code param is null";
-            $list = array();
-        }
-
-        $this->ajaxOutput($code, $msg, array('list'=>$list));    
->>>>>>> FETCH_HEAD
     }
 
 

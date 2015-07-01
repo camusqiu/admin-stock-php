@@ -3,7 +3,6 @@ namespace Home\Controller;
 use Home\Controller\CommonController;
 
 /**
-<<<<<<< HEAD
  * “帖子”控制器类。
  */ 
 class PostController extends CommonController {
@@ -14,9 +13,12 @@ class PostController extends CommonController {
     private $pagenum = 0;
     private $assignNumMax = 5;
     private $msg;
+    private $stime = "";
+    private $etime = "";
 
     public function sortNewsInfo(){
-
+        $this->stime=microtime(true);     
+    
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
@@ -39,6 +41,9 @@ class PostController extends CommonController {
         $this->pagenum = I('param.pagenum',10);
 
         $Model = M('Post'); 
+        $ModelView = M('PostView'); 
+        $ModelAdmin = M('Admin'); 
+        $ModelUser = M('User'); 
         $ModelInfo = M('NewsInfo'); 
         if($essential_state && $essential_state>=0)
         {
@@ -65,7 +70,7 @@ class PostController extends CommonController {
         }
         if($user_id && $user_id>=0)
         {
-            $conditionTemp = sprintf(" and user_id='%s'", $user_id); 
+            $conditionTemp = sprintf(" and admin_id='%s'", $user_id); 
             $this->condition = $this->condition.$conditionTemp;
         }
         if($state && $state>=0)
@@ -89,95 +94,159 @@ class PostController extends CommonController {
         {
             $strOrder = "comment_count desc";
             $list = $Model->where($this->condition)->order($strOrder)->page($this->curpage, $this->pagenum)->select();
-        }else if($viewNum!=0 && $viewNum!=-1)
-        {
-            $key = "post_view_count_total";
-            $redis = S(array('type'=>'Redis'));
-            $listTemp = $redis->zrevrange($key, $this->curpage*10 - 1, 99);
+        }else if($viewNum!=0 && $viewNum!=-1){
 
-            $listTempVal = $redis->zrevrange($key, $this->curpage*10 - 1, 99, score);
-            
-            $listTempTag = $listTemp;
+            //从postview表中获取
+            $orderBy = 'viewnum desc';
+            $conditionTemp = sprintf(" 1=1 and ctime>'%s' and ctime<'%s' and type!=1", $ctime, $ctimeend." 23:59:59");  
 
-            //过滤掉前端发帖
-            for ($i=0, $j=0; $i < 99 && $j <= 10; $i++) { 
-                $strCondition = sprintf("id='%s'", $listTemp[$i]);
+            $allnum = $ModelView->where($conditionTemp)->count();
 
-                $listTitle = $Model->where($strCondition)->select();
-
-                if($listTitle){
-                    //$strCondition = sprintf("1=1 and title='%s' and ctime>'%s' and ctime<='%s'", $listTitle[0]['title'], $ctime, $ctimeend." 23:59:59");
-                    $strCondition = sprintf("title='%s'", $listTitle[0]['title']);
-
-                    $list = $ModelInfo->where($strCondition)->select();
-
-                    if($list){
-                        $listTempTag[$i] =  1;
-                        $j++;
-                    }else{
-                        $listTempTag[$i] =  0;
-                    }
-                }
+            $list = $ModelView->where($conditionTemp)->order($orderBy)->page($this->curpage, $this->pagenum)->select();
+            if($list || $list == null){
+                $code = 0;
+                $msg = "suc";
+            }else{
+                $list = Array();
+                $code = 10001;
+                $msg = "no data";
             }
+
+            $num = count($list);
+            for($i=0; $i<$num; $i++){
+                $viewnum = $list[$i]['viewnum'];
+
+                $condition = "id='".$list[$i]['post_id']."'";
+                $listPost = $Model->where($condition)->select();
+
+                $list[$i]['view'] = $viewnum;
+                $list[$i]['recom_count'] = $listPost[0]['recom_count'];
+                $list[$i]['comment_count'] = $listPost[0]['comment_count'];
+                $list[$i]['transmit_count'] = $listPost[0]['transmit_count'];
+                $list[$i]['title'] = $listPost[0]['title'];
+                $list[$i]['content'] = $listPost[0]['content'];
+                $list[$i]['id'] = $listPost[0]['id'];
+                $list[$i]['user_id'] = $listPost[0]['user_id'];
+                $list[$i]['essential_state'] = $listPost[0]['essential_state'];
+                $list[$i]['index_recom_state'] = $listPost[0]['index_recom_state'];
+                $list[$i]['mince_type'] = $listPost[0]['mince_type'];
+                //$list[$i]['admin_id'] = $listPost[0]['admin_id'];
+                $list[$i]['source_name'] = $listPost[0]['source_name'];
+                //$list[$i]['source_url'] = $listPost[0]['source_url'];
+                $list[$i]['audit_state'] = $listPost[0]['audit_state'];
+
+                //$list[$i]['source_url'] = "http://www.richba.com/article.html?id=".$listPost[0]['id'];
+                $list[$i]['source_url'] = "http://www.richba.com/post/detail/".$listPost[0]['id'].".html";
+
+                //编辑昵称
+                $listInfo = $ModelInfo->where("url='".$listPost[0]['source_url']."'")->select();
+                $list[$i]['admin_id'] = $listInfo[0]['user_id'] ? $listInfo[0]['user_id'] : "";
+                $listAdmin = $ModelAdmin->where("user_id='".$list[$i]['admin_id']."'")->select();
+                $list[$i]['adminname'] = $listAdmin[0]['chinaname'] ? $listAdmin[0]['chinaname'] : "";
+
+                //发帖用户昵称
+                $listUser = $ModelUser->where("id='".$listPost[0]['user_id']."'")->select();
+                $list[$i]['username'] = $listUser[0]['name'] ? $listUser[0]['name'] : "";
+            }
+          //      var_dump($listPost);
+
+            $this->ajaxOutput($code, $msg, array('count'=>$allnum, 'list'=>$list));    
+
+
+
+
+
+            // $key = "post_view_count_total";
+            // $redis = S(array('type'=>'Redis'));
+            // $listTemp = $redis->zrevrange($key, $this->curpage*10 - 1, 99);
+
+            // $listTempVal = $redis->zrevrange($key, $this->curpage*10 - 1, 99, score);
             
-            
-            //过滤掉前端发帖
+            // $listTempTag = $listTemp;
+
+            // //过滤掉前端发帖
             // for ($i=0, $j=0; $i < 99 && $j <= 10; $i++) { 
-            //     $strCondition = sprintf("1=1 and id='%s' and type!='1'", $listTemp[$i]);
+            //     $strCondition = sprintf("id='%s'", $listTemp[$i]);
 
             //     $listTitle = $Model->where($strCondition)->select();
 
             //     if($listTitle){
-            //         $listTempTag[$i] =  1;
-            //         $j++;
-            //     }else{
-            //         $listTempTag[$i] =  0;
+            //         //$strCondition = sprintf("1=1 and title='%s' and ctime>'%s' and ctime<='%s'", $listTitle[0]['title'], $ctime, $ctimeend." 23:59:59");
+            //         $strCondition = sprintf("title='%s'", $listTitle[0]['title']);
+
+            //         $list = $ModelInfo->where($strCondition)->select();
+
+            //         if($list){
+            //             $listTempTag[$i] =  1;
+            //             $j++;
+            //         }else{
+            //             $listTempTag[$i] =  0;
+            //         }
             //     }
             // }
             
-
-
-
-            //echo "--------";
-            //var_dump($listTempTag);
-            $condition = "1=1";
-            for($i=0, $j=0; $i<count($listTemp) && $j < 10;$i++){
-                if ($listTempTag[$i] == 1) {
-                    $tempId = $listTemp[$i];
-                    $tempNum = $listTempVal[$tempId].",";
-                    if($j == 0){
-                        $condition = $condition." and id in ('".$listTemp[$i]."',";
-                    }else if($j == $this->pagenum - 1){
-                        $condition = $condition." '".$listTemp[$i]."')";    
-                    }else{
-                        $condition = $condition." '".$listTemp[$i]."',";
-                    }
-                    $j++;
-                }
-            }
-            $this->condition = $condition;
             
-            //echo $condition;
+            // //过滤掉前端发帖
+            // // for ($i=0, $j=0; $i < 99 && $j <= 10; $i++) { 
+            // //     $strCondition = sprintf("1=1 and id='%s' and type!='1'", $listTemp[$i]);
 
-            $list = $Model->where($this->condition)->select();
+            // //     $listTitle = $Model->where($strCondition)->select();
+
+            // //     if($listTitle){
+            // //         $listTempTag[$i] =  1;
+            // //         $j++;
+            // //     }else{
+            // //         $listTempTag[$i] =  0;
+            // //     }
+            // // }
+            
+
+
+
+            // //echo "--------";
+            // //var_dump($listTempTag);
+            // $condition = "1=1";
+            // for($i=0, $j=0; $i<count($listTemp) && $j < 10;$i++){
+            //     if ($listTempTag[$i] == 1) {
+            //         $tempId = $listTemp[$i];
+            //         $tempNum = $listTempVal[$tempId].",";
+            //         if($j == 0){
+            //             $condition = $condition." and id in ('".$listTemp[$i]."',";
+            //         }else if($j == $this->pagenum - 1){
+            //             $condition = $condition." '".$listTemp[$i]."')";    
+            //         }else{
+            //             $condition = $condition." '".$listTemp[$i]."',";
+            //         }
+            //         $j++;
+            //     }
+            // }
+            // $this->condition = $condition;
+            
+            // //echo $condition;
+
+            // $list = $Model->where($this->condition)->select();
         }else{
             $list = $Model->where($this->condition)->order('ctime desc')->page($this->curpage, $this->pagenum)->select();
+            $this->etime = microtime(true) - $this->stime;
+            //echo $this->etime."\n";
         }
 
         $this->listData = $list;
+        //echo $this->etime."\n";
 
-        $this->getViewNum();
+        $this->getViewNumAndUrl();
 
         $this->getUrl();
-
-        
 
         //var_dump($this->listData);
         $this->ajaxOutput(0, $this->msg, array('count'=>$allnum, 'list'=>$this->listData));                                                                                                                               
     }
 
 
-    public function getViewNum(){
+    public function getViewNumAndUrl(){
+        $ModelAdmin = M('Admin'); 
+        $ModelInfo = M('NewsInfo'); 
+
 
         $key = "post_view_count_total";
         $redis = S(array('type'=>'Redis'));
@@ -185,27 +254,17 @@ class PostController extends CommonController {
 
         for ($i=0; $i < $num; $i++) { 
 
-             $listTemp = $redis->ZSCORE($key, $this->listData[$i]['id']);
-             $this->listData[$i]['PostId'] = $this->listData[$i]['id'];
-             $this->listData[$i]['viewNum'] = $listTemp?$listTemp:0;
-        }
+            $listTemp = $redis->ZSCORE($key, $this->listData[$i]['id']);
+            $this->listData[$i]['PostId'] = $this->listData[$i]['id'];
+            $this->listData[$i]['view'] = $listTemp?$listTemp:0;
+             //编辑昵称
+            $listInfo = $ModelInfo->where("url='".$this->listData[$i]['source_url']."'")->select();
+            $this->listData[$i]['admin_id'] = $listInfo[0]['user_id'] ? $listInfo[0]['user_id'] : "";
+            $listAdmin = $ModelAdmin->where("user_id='".$this->listData[$i]['admin_id']."'")->select();
+            $this->listData[$i]['adminname'] = $listAdmin[0]['chinaname'] ? $listAdmin[0]['chinaname'] : "";
 
-        //按浏览数排
-        for($i = 0; $i < $num - 1; $i++) {
-            $max = $this->listData[$i]['viewNum'];
-            $tag = $i;
-            for($j = $i + 1; $j < $num; $j++){
-                $b = $this->listData[$j]['viewNum'];
-                if($max < $b){
-                    $tag = $j;
-                    $max = $b;
-                }
-            }
-            $temp = $this->listData[$tag];
-            $this->listData[$tag] = $this->listData[$i];
-            $this->listData[$i] = $temp;
-        } 
-        
+            //$this->listData[$i]['source_url'] = "http://www.richba.com/article.html?id=".$this->listData[$i]['id'];
+        }
     }
 
 
@@ -213,20 +272,19 @@ class PostController extends CommonController {
      *
     **/
      public function getUrl(){
-        //实例化一个模型
+
         $Model = M('NewsInfo');
         $ModelPost = M('Post');
 
-        //读取10条数据（更多带条件的读取方法参见文档》模型》CURD操作说明）
-        $url = I('param.url',-1);
-        if($url && $url >= 0){
-            $arrayUrl = explode(";", $url);
-        }
+        // $url = I('param.url',-1);
+        // if($url && $url >= 0){
+        //     $arrayUrl = explode(";", $url);
+        // }
 
         $num = count($this->listData);
         for($i = 0; $i < $num; $i++){
             //$strCondition = sprintf("1=1 and url='%s' and title='%s'", $this->listData[$i]['source_url'], $this->listData[$i]['title']);
-            $strCondition = sprintf("1=1 and title='%s'", $this->listData[$i]['title']);
+            $strCondition = sprintf("1=1 and url='%s'", $this->listData[$i]['source_url']);
             $list = $Model->where($strCondition)->select();
 
             if($list){
@@ -248,10 +306,11 @@ class PostController extends CommonController {
                 //$msg = "no result";
                 //$this->ajaxOutput($code, $msg, array('count'=>count($list), 'list'=>$list));
             }
-            $strCondition = sprintf("1=1 and source_url='%s'", $this->listData[$i]['source_url']);
+            $strCondition = sprintf("1=1 and source_url='%s'  and state='1'", $this->listData[$i]['source_url']);
             $list = $ModelPost->where($strCondition)->select();
             if ($list) {
-                $this->listData[$i]['source_url'] = "http://www.richba.com/article.html?id=".$list[0]['id'];
+                //$this->listData[$i]['source_url'] = "http://www.richba.com/article.html?id=".$list[0]['id'];
+                $this->listData[$i]['source_url'] = "http://www.richba.com/post/detail/".$list[0]['id'].".html";
             }else{
                 $list = Array();
                 $code = 0;
@@ -295,9 +354,10 @@ class PostController extends CommonController {
         $audit_state = I('param.audit_state',-1);
 
         $this->condition = "1=1 ";
-        if($type == 1){
-            $this->condition = $this->condition." and type=".$type;
-        }
+        //if($type == 1){
+        $type = 1;
+        $this->condition = $this->condition." and type=".$type;
+        //}
         if($essential_state == 1){
             $this->condition = $this->condition." and essential_state=".$essential_state;
         }
@@ -322,29 +382,27 @@ class PostController extends CommonController {
         $ModelUser = M('User'); 
 
         $conditionTemp = sprintf(" and ctime>'%s' and ctime<'%s' and admin_id ='%s'", $ctime, $ctimeend." 23:59:59", $res_isLogin);
+        $conditionTempAssignNum = sprintf(" and admin_id ='%s'", $res_isLogin);
+
         $this->condition = $this->condition.$conditionTemp;
+        $conditionTempAssignNum = $this->condition.$conditionTempAssignNum;
+
         $allnum = $Model->where($this->condition)->count();
+        //分配池中已有未处理个数
+        $assignNum = $Model->where($conditionTempAssignNum)->count();
+
         $list = $Model->where($this->condition)->order('ctime desc')->page($this->curpage, $this->pagenum)->select();
-        //echo count($list);
-        //echo $this->condition;
 
         if($list || $list == null){
             $code = 0;
             $msg = "suc";
-            $assignNum = 0;
-            if($list){
-               $assignNum = count($list); 
-            }
             
-
-            //echo "ass:".$assignNum;
-            //echo $assignNum;
+            //分配池小于最大可分配数，补满
             if($assignNum < $this->assignNumMax && $undel == 1){
                 $data['admin_id'] = $res_isLogin;
                 $conditionTemp = sprintf("1=1 and ctime>'%s' and ctime<'%s' and type='1' and state='1' and admin_id =''", $ctime, $ctimeend." 23:59:59");
                 $listAssign = $Model->where($conditionTemp)->order('ctime desc')->limit($this->assignNumMax-$assignNum)->select();
-                //echo $conditionTemp;
-                //echo count($listAssign);
+
                 if ($listAssign) {
                     for ($i=0; $i < count($listAssign); $i++) {
                         $listTemp = $Model->where(" 1=1 and id='".$listAssign[$i]['id']."'")->save($data);
@@ -354,7 +412,7 @@ class PostController extends CommonController {
 
             $key ="post_view_count_total";
             $redis = S(array('type'=>'Redis'));
-            for($i=0; $i<$assignNum; $i++){
+            for($i=0; $i<$assignNum && $i<count($list); $i++){
                 //帖子总浏览次数
                 $listTemp = $redis->ZSCORE($key, $list[$i]['id']);
                 $list[$i]['view'] = $listTemp ? $listTemp : 0;
@@ -379,6 +437,7 @@ class PostController extends CommonController {
 
     }
 
+
     /**
     * 获取所有帖子(按时间[默认]/评论数/推荐数)
     **/
@@ -393,19 +452,88 @@ class PostController extends CommonController {
         $ctime = I('param.ctime',date('Y-m-d'));
         $ctimeend = I('param.ctimeend',date('Y-m-d'));
 
+        $type = I('param.type',-1);
         $comment = I('param.comment',-1);
         $recom = I('param.recom',-1);
+        $view = I('param.view',-1);
         $Model = M('Post'); 
+        $ModelView = M('PostView');
         $ModelAdmin = M('Admin');
         $ModelUser = M('User');
 
-        $conditionTemp = sprintf(" 1=1 and ctime>'%s' and ctime<'%s' and type=1 and state!=0", $ctime, $ctimeend." 23:59:59");
-        $orderBy = '';
+        $conditionTemp = sprintf(" 1=1 and ctime>'%s' and ctime<'%s' and type=1", $ctime, $ctimeend." 23:59:59");
 
+        //分类全部查看
+        if ($type == 0) {
+            $conditionTemp = $conditionTemp." and audit_state=1 and state!=0";
+        }else if ($type == 1) {
+            $conditionTemp = $conditionTemp." and essential_state=1 and state!=0";
+        }else if ($type == 2) {
+            $conditionTemp = $conditionTemp." and sticky_state=1 and state!=0";
+        }else if ($type == 3) {
+            $conditionTemp = $conditionTemp." and index_recom_state=1 and state!=0";
+        }else if ($type == 4) {
+            $conditionTemp = $conditionTemp." and state=0";
+        }else if ($type == 5) {
+            $conditionTemp = $conditionTemp." and audit_state=2 and state!=0";
+        }
+
+
+        $orderBy = '';
         if($comment == 1){
             $orderBy = 'comment_count desc';
         }else if($recom == 1){
             $orderBy = 'recom_count desc';
+        }else if($view == 1){
+            //从postview表中获取
+            $orderBy = 'viewnum desc';
+            $conditionTemp = sprintf(" 1=1 and ctime>'%s' and ctime<'%s' and type=1", $ctime, $ctimeend." 23:59:59");  
+
+            $allnum = $ModelView->where($conditionTemp)->count();
+
+            $list = $ModelView->where($conditionTemp)->order($orderBy)->page($this->curpage, $this->pagenum)->select();
+            if($list || $list == null){
+                $code = 0;
+                $msg = "suc";
+            }else{
+                $list = Array();
+                $code = 10001;
+                $msg = "no data";
+            }
+
+            $num = count($list);
+            for($i=0; $i<$num; $i++){
+                $viewnum = $list[$i]['viewnum'];
+
+                $condition = "id='".$list[$i]['post_id']."'";
+                $listPost = $Model->where($condition)->select();
+
+                $list[$i]['view'] = $viewnum;
+                $list[$i]['recom_count'] = $listPost[0]['recom_count'];
+                $list[$i]['comment_count'] = $listPost[0]['comment_count'];
+                $list[$i]['title'] = $listPost[0]['title'];
+                $list[$i]['content'] = $listPost[0]['content'];
+                $list[$i]['id'] = $listPost[0]['id'];
+                $list[$i]['user_id'] = $listPost[0]['user_id'];
+                $list[$i]['essential_state'] = $listPost[0]['essential_state'];
+                $list[$i]['index_recom_state'] = $listPost[0]['index_recom_state'];
+                $list[$i]['mince_type'] = $listPost[0]['mince_type'];
+                $list[$i]['admin_id'] = $listPost[0]['admin_id'];
+                $list[$i]['source_name'] = $listPost[0]['source_name'];
+                $list[$i]['source_url'] = $listPost[0]['source_url'];
+                $list[$i]['audit_state'] = $listPost[0]['audit_state'];
+
+                //编辑昵称
+                $listAdmin = $ModelAdmin->where("user_id='".$listPost[0]['admin_id']."'")->select();
+                $list[$i]['adminname'] = $listAdmin[0]['chinaname'] ? $listAdmin[0]['chinaname'] : "";
+
+                //发帖用户昵称
+                $listUser = $ModelUser->where("id='".$listPost[0]['user_id']."'")->select();
+                $list[$i]['username'] = $listUser[0]['name'] ? $listUser[0]['name'] : "";
+            }
+
+            $this->ajaxOutput($code, $msg, array('count'=>$allnum, 'list'=>$list));    
+
         }else{
             $orderBy = 'ctime desc';
         }
@@ -415,6 +543,9 @@ class PostController extends CommonController {
         if($list || $list == null){
             $code = 0;
             $msg = "suc";
+            if ($list == null) {
+                $list = Array();
+            }
         }else{
             $list = Array();
             $code = 10001;
@@ -516,33 +647,72 @@ class PostController extends CommonController {
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
 
+        $LData['table_name'] = "Post";
+        $LData['type'] = 1;
+        $LData['admin_id'] = $res_isLogin;
+
+        $pageName = I('param.pagename',-1);
+        if($pageName != "-1"){
+            $is_allow = pageAuthority($pageName, $res_isLogin);
+            if($is_allow != "1"){
+                $this->ajaxOutput(20402, "limit ", array('list'=>Array()));
+            }
+        }
+
         $id = I('param.id',-1);
         $Model = M('Post'); 
         if($id){
             $list = $Model->where("id='".$id."'")->select();
             if($list){
+                $to_user_id = $list[0]['user_id'];
                 $data['essential_state'] = ($list[0]['essential_state']+1)%2;
+                if ($data['essential_state'] == 1) {
+                    $data['hot_state'] = 1;
+                }
                 //$data['audit_state'] = '2';
-                $list = $Model->where("id='".$id."'")->save($data);
-                if($list){
+                $SList = $Model->where("id='".$id."'")->save($data);
+                if($SList){
                     $code = 0;
                     $msg = "suc";
+
+                    $LData['msg'] = "用户发帖: id ".$id." title ".$list[0]['title']."  取消精华帖设置";
+                    if ($data['essential_state'] == 1) {
+                        // 发送站内信
+                        $user_id = $res_isLogin;
+                        $this->sendLetters("您的发帖已被我们加精", $user_id, $to_user_id);
+
+                        $LData['msg'] = "用户发帖: id ".$id." title ".$list[0]['title']."  设置为精华帖";
+                    }else if($data['essential_state'] == 0){
+                        //取消精华时，判断热帖
+                        $this->isHotPost($id);
+                    }
+
                 }else{
                     $list = Array();
                     $code = 10001;
                     $msg = "no data";
+
+                    $LData['code'] = $code;
+                    $LData['msg'] = "用户发帖: id ".$id." title ".$list[0]['title']."  不存在, 设置为精华帖失败";
                 }
+                
             }else{
                 $list = Array();
                 $code = 10001;
                 $msg = "no data";
+
+                $LData['code'] = $code;
+                $LData['msg'] = "用户发帖: id ".$id." title ".$list[0]['title']." 不存在, 查找用户贴失败";
             }
         }else{
             $list = Array();
             $code = 20403;
-            $msg = "post id wrong";
+            $msg = "无帖子ID参数";
+            
+            $LData['code'] = $code;
+            $LData['msg'] = "用户发帖: id ".$id." 参数错误,设置为精华帖失败";
         }
-
+        aLog($LData);
         $this->ajaxOutput($code, $msg, array('list'=>$list));
     }
 
@@ -564,10 +734,91 @@ class PostController extends CommonController {
             if($list){
                 //$data['audit_state'] = '2';
                 $data['sticky_state'] = ($list[0]['sticky_state']+1)%2;
+                if ($data['sticky_state'] == 1) {
+                    $data['hot_state'] = 1;
+                }
+                
                 $list = $Model->where("id='".$id."'")->save($data);
                 if($list){
                     $code = 0;
                     $msg = "suc";
+                }else{
+                    $list = Array();
+                    $code = 10001;
+                    $msg = "no data";
+                }
+            }else{
+                $list = Array();
+                $code = 10001;
+                $msg = "no data";
+            }
+        }else{
+            $list = Array();
+            $code = 20403;
+            $msg = "post id wrong";
+        }
+
+        //取消置顶时，判断热帖
+        if ($code == 0 && $data['sticky_state'] == 0) {
+            $this->isHotPost($id);
+        }
+
+        $this->ajaxOutput($code, $msg, array('list'=>$list));
+    }
+
+    public function isHotPost($id){
+        $Model = M('Post');
+        $ModelV = M('VUser');
+        $list = $Model->master(true)->where("id='".$id."'")->select();
+        if ($list[0]['sticky_state'] == 0 && $list[0]['essential_state'] == 0) {
+            //查看该贴是否为v用户发帖
+            $VList = $ModelV->master(true)->where("user_id='".$list[0]['user_id']."' and v_state='1' and ctime<='".$list[0]['modify_time']."' and etime>='".$list[0]['modify_time']."'")->limit(1)->select();
+            if ($VList && $VList != null) {
+                //发帖时用户为v，依然为热帖
+            }else{
+                $PData['hot_state'] = 0;
+                $list = $Model->where("id='".$id."'")->save($PData);
+            }
+        }
+    }
+
+
+    /**
+    * 首推帖子
+    **/
+    public function setToIndex(){
+
+        $res_isLogin = $this->isLogin();
+        if(!$res_isLogin){
+            $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
+        }
+
+        $pageName = I('param.pagename',-1);
+        if($pageName != "-1"){
+            $is_allow = pageAuthority($pageName, $res_isLogin);
+            if($is_allow != "1"){
+                $this->ajaxOutput(20402, "limit ", array('list'=>Array()));
+            }
+        }
+
+        $id = I('param.id',-1);
+        $Model = M('Post'); 
+        if($id){
+            $list = $Model->where("id='".$id."'")->select();
+            if($list){
+                //$data['audit_state'] = '2';
+                $to_user_id = $list[0]['user_id'];
+                $data['index_recom_state'] = ($list[0]['index_recom_state']+1)%2;
+                $list = $Model->where("id='".$id."'")->save($data);
+                if($list){
+                    $code = 0;
+                    $msg = "suc";
+
+                    if($data['index_recom_state'] == 1){
+                       // 发送站内信
+                        $user_id = $res_isLogin;
+                        $this->sendLetters("您的发帖已经被我们首页推荐，再接再厉！", $user_id, $to_user_id);
+                    }                    
                 }else{
                     $list = Array();
                     $code = 10001;
@@ -588,44 +839,37 @@ class PostController extends CommonController {
     }
 
 
-    /**
-    * 首推帖子
-    **/
-    public function setToIndex(){
+    public function sendLetters ($title, $user_id, $to_user_id) {
 
-        $res_isLogin = $this->isLogin();
-        if(!$res_isLogin){
-            $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
+        $LetterInfo = D('LetterInfo');
+        $dataLetter['opt'] = "";
+        
+        $dataLetter['title'] = $title;
+        $dataLetter['content'] = $title;
+
+        if ($user_id) {
+            $dataLetter['user_id'] = $user_id;
         }
 
-        $id = I('param.id',-1);
-        $Model = M('Post'); 
-        if($id){
-            $list = $Model->where("id='".$id."'")->select();
-            if($list){
-                //$data['audit_state'] = '2';
-                $data['index_recom_state'] = ($list[0]['index_recom_state']+1)%2;
-                $list = $Model->where("id='".$id."'")->save($data);
-                if($list){
-                    $code = 0;
-                    $msg = "suc";
-                }else{
-                    $list = Array();
-                    $code = 10001;
-                    $msg = "no data";
+        if ($to_user_id) {
+            $dataLetter['to_user_id'] = $to_user_id;
+        }
+
+        $req = $LetterInfo->sendLetter($dataLetter);
+        if($req == flase){
+            $code = $LetterInfo->getErrorNo();
+            $msg = $LetterInfo->getError();
+            if ($code == 10001) {
+                //插入失败重试;
+                sleep(1);
+                $req = $LetterInfo->sendLetter($dataLetter);
+                if($req == flase){
+                    $code = $LetterInfo->getErrorNo();
+                    $msg = $LetterInfo->getError();
+                    $this->ajaxOutput($code, $msg, array('count'=>0, 'list'=>array()));
                 }
-            }else{
-                $list = Array();
-                $code = 10001;
-                $msg = "no data";
             }
-        }else{
-            $list = Array();
-            $code = 20403;
-            $msg = "post id wrong";
         }
-
-        $this->ajaxOutput($code, $msg, array('list'=>$list));
     }
 
     /**
@@ -772,7 +1016,7 @@ class PostController extends CommonController {
         $this->ajaxOutput($code, $msg, array('list'=>$list));
     }
 
-    //
+   //吧贴管理按用户查找
     public function search(){
 
         $value = I('param.value',-1);
@@ -782,7 +1026,50 @@ class PostController extends CommonController {
             
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
-        
+
+        $ctime = I('param.ctime',date('Y-m-d'));
+        $ctimeend = I('param.ctimeend',date('Y-m-d'));
+
+        $type = I('param.type',-1);
+        $undel = I('param.undel',-1);
+        $essential_state = I('param.essential_state',-1);
+        $sticky_state = I('param.sticky_state',-1);
+        $index_recom_state = I('param.index_recom_state',-1);
+        $state = I('param.state',-1);
+        $audit_state = I('param.audit_state',-1);
+
+        $this->condition = "1=1 ";
+        //if($type == 1){
+        $type = 1;
+        $this->condition = $this->condition." and type=".$type;
+        //}
+        if($essential_state == 1){
+            $this->condition = $this->condition." and essential_state=".$essential_state;
+        }
+        if($sticky_state == 1){
+            $this->condition = $this->condition." and sticky_state=".$sticky_state;
+        }
+        if($index_recom_state == 1){
+            $this->condition = $this->condition." and index_recom_state=".$index_recom_state;
+        }
+        if($state == 0){
+            $this->condition = $this->condition." and state=".$state;
+        }else{
+            $this->condition = $this->condition." and state='1'";
+        }
+        if($audit_state != 0){
+            $this->condition = $this->condition." and audit_state='".$audit_state."'";
+        }
+
+        if($ctime){
+          $this->condition = $this->condition." and ctime>='".$ctime."'";
+        }
+
+        if($ctimeend){
+          $this->condition = $this->condition." and ctime<='".$ctimeend." 23:59:59'";
+        }
+
+
         //user表查发帖用户id
         $listTemp = $ModelUser->where("name='".$value."'")->select();
         if($listTemp){
@@ -791,7 +1078,8 @@ class PostController extends CommonController {
             
             $num = $Model->where("user_id='".$listTemp[0]['id']."'")->count();
             //post表插用户所有贴， admin处理人
-            $list = $Model->where("user_id='".$listTemp[0]['id']."'")->page($this->curpage, $this->pagenum)->select();
+            $this->condition = $this->condition." and user_id='".$listTemp[0]['id']."'";
+            $list = $Model->where($this->condition)->page($this->curpage, $this->pagenum)->select();
             if($list){
                 $code = 0;
                 $msg = "suc";
@@ -820,20 +1108,29 @@ class PostController extends CommonController {
                     }
                     
                 }
+            }else if($list == null){
+                $list = Array();
+                $code = 0;
+                $msg = "no data";
             }else{
                 $list = Array();
                 $code = 10001;
-                $msg = "no data";
+                $msg = "search error";
             }
 
-        }else{
+        }else if($listTemp == null){
+            $list = Array();
+            $code = 0;
+            $msg = "no data";
+        }else {
             $list = Array();
             $code = 10001;
-            $msg = "no data";
+            $msg = "search error";
         }
 
-        $this->ajaxOutput($code, $msg, array('count'=>$num,'list'=>$list));    
+        $this->ajaxOutput($code, $msg, array('count'=>count($list),'list'=>$list));    
     }
+
 
 
     public function reIndexStock($id, $uid){
@@ -861,9 +1158,4 @@ class PostController extends CommonController {
     }
 
 
-=======
- * “帖子标签”控制器类。
- */ 
-class PostBarController extends CommonController {
->>>>>>> FETCH_HEAD
 }

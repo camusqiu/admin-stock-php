@@ -95,19 +95,13 @@ class CountController extends CommonController {
 
 
     public function getStockBar_admin($val, $day) {
-<<<<<<< HEAD
         set_time_limit(0);
-=======
->>>>>>> FETCH_HEAD
         $Model = M('Post_bar');
         $time = date('Y-m-d');
         $ctime = I('param.ctime',$time);
         $ctimeend = I('param.ctimeend',$time);
-<<<<<<< HEAD
         //$ctime = "2014-05-25";
         //$ctimeend = "2015-05-27";
-=======
->>>>>>> FETCH_HEAD
         if($val == "ZH" && $day == "today"){
             $condition = sprintf("bar_type='4' and ctime>'%s' and bar_code>'018'", $time);
             $list = $Model->where($condition)->select();
@@ -175,11 +169,7 @@ class CountController extends CommonController {
 
     public function countGGBarDataAndSort(){
         // $this->curpage = I('param.curpage',1);
-<<<<<<< HEAD
         // $this->pagenum = I('param.pagenum',30000);
-=======
-        // $this->pagenum = I('param.pagenum',10);
->>>>>>> FETCH_HEAD
         set_time_limit(0);
         $this->curpage = 1;
         $this->pagenum = 30000;
@@ -214,10 +204,7 @@ class CountController extends CommonController {
             $this->listAll[$i]['utoday'] = $list ? $list : 0;
             $this->listAll[$i]['code'] = $this->listData[$i]['code'];
             $this->listAll[$i]['name'] = $this->listData[$i]['name'];
-<<<<<<< HEAD
             $this->listAll[$i]['id'] = $this->listData[$i]['id'];
-=======
->>>>>>> FETCH_HEAD
         }
 
         //股吧总发帖数
@@ -284,10 +271,7 @@ class CountController extends CommonController {
             $this->listAll[$i]['code'] = $this->listData[$i]['code'];
             $this->listAll[$i]['name'] = $this->listData[$i]['name'];
             $this->listAll[$i]['class'] = $this->listData[$i]['class'];
-<<<<<<< HEAD
             $this->listAll[$i]['id'] = $this->listData[$i]['id'];
-=======
->>>>>>> FETCH_HEAD
         }
 
 
@@ -352,7 +336,6 @@ class CountController extends CommonController {
 
         if($fp){ 
             //head
-<<<<<<< HEAD
             $content = "序号"."\t"."ID"."\t"."市场"."\t"."股吧"."\t"."代码"."\t"."累计关注人数"."\t"."总帖数(总数)"."\t"."总帖数(今日)"."\t"."用户发帖(总数)"."\t"."用户发帖(今日)"." \r\n";
             $content = mb_convert_encoding( $content, "GBK", "UTF-8");
             $flag=fwrite($fp,$content); 
@@ -361,15 +344,6 @@ class CountController extends CommonController {
             if(!$flag) 
             { 
                 $this->ajaxOutput(0, 'write title to file failed', array());
-=======
-            $content = "序号"."\t"."市场"."\t"."股吧"."\t"."代码"."\t"."累计关注人数"."\t"."用户发帖(总数)"."\t"."户发帖(今日)"."\t"."编辑发帖(总数)"."\t"."编辑发帖(今日)"." \r\n";
-            $content = mb_convert_encoding( $content, "GBK", "UTF-8");
-            $flag=fwrite($fp,$content); 
-            //$flag=fwrite($fp,"1".$i." "."%s\r\n", $content); 
-            if(!$flag) 
-            { 
-                $this->ajaxOutput(0, 'writeToFile failed', array());
->>>>>>> FETCH_HEAD
             }
 
             $count = $this->countall; 
@@ -386,22 +360,14 @@ class CountController extends CommonController {
                     $a['typename'] = "美股";
                 }
 
-<<<<<<< HEAD
                // $content = $i."\t"."[".$a['id']."]"."\t".$a['typename']."\t".$a['name']."\t".$a['code']."\t".$a['fansnum']."\t".$a['uallnum']."\t".$a['utoday']."\t"."aallnum"."\t"."atoday"." \r\n";
                 $content = $i."\t"."[".$a['id']."]"."\t".$a['typename']."\t".$a['name']."\t".$a['code']."\t".$a['fansnum']."\t".$a['uallnum']."\t".$a['utoday']."\t".$a['aallnum']."\t".$a['atoday']." \r\n";
-=======
-                $content = $i."\t".$a['typename']."\t".$a['name']."\t".$a['code']."\t".$a['fansnum']."\t".$a['uallnum']."\t".$a['utoday']."\t".$a['aallnum']."\t".$a['atoday']." \r\n";
->>>>>>> FETCH_HEAD
                 $content = mb_convert_encoding( $content, "GBK", "UTF-8");
                 $flag=fwrite($fp,$content); 
                 //$flag=fwrite($fp,"1".$i." "."%s\r\n", $content); 
                 if(!$flag) 
                 { 
-<<<<<<< HEAD
                     $this->ajaxOutput(0, 'write content to file failed', array());
-=======
-                    $this->ajaxOutput(0, 'writeToFile failed', array());
->>>>>>> FETCH_HEAD
                     break; 
                 } 
                 //$count+=$flag; 

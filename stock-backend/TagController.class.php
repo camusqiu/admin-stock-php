@@ -6,7 +6,6 @@ use Home\Controller\CommonController;
  * “帖子标签”控制器类。
  */ 
 class TagController extends CommonController {
-<<<<<<< HEAD
     
     private $curpage = 0;
     private $pagenum = 0;
@@ -172,22 +171,6 @@ class TagController extends CommonController {
         $Model = M('Tag');
 
         $condition = "1=1 and available='1'";
-=======
-	public function get(){
-		$Model = M('Tag');
-		//$list = $Model->getField('id,name,subtype');
-		$list = $Model->where('1=1')->select();
-		$this->ajaxOutput(0, '', array('list'=>$list));
-	}
-
-
-	public function getTag() {
-        $HYGN = I('HYGN', -1);
-        $market = I('market', -1);
-        $Model = M('Tag');
-
-        $condition = "1=1";
->>>>>>> FETCH_HEAD
         if($HYGN != -1 && $HYGN != 0){
             $condition = $condition." and type='".$HYGN."'";
         }
@@ -196,7 +179,6 @@ class TagController extends CommonController {
             $condition = $condition." and subtype='".$market."'";
         }
 
-<<<<<<< HEAD
         if($name != -1 && $name != ""){
             $condition = $condition." and name='".$name."'";
         }
@@ -209,8 +191,6 @@ class TagController extends CommonController {
             $condition = $condition." and spell='".$spell."'";
         }
 
-=======
->>>>>>> FETCH_HEAD
         $list = $Model->where($condition)->select();
 
         if($list || $list == null){
@@ -221,17 +201,12 @@ class TagController extends CommonController {
             }
         }else{
             $list = Array();
-<<<<<<< HEAD
             $code = -1;
-=======
-            $code = 20401;
->>>>>>> FETCH_HEAD
             $msg = $codes." is not set inittag";
         }
         $this->ajaxOutput($code, $msg, array('list'=>$list));    
     }
 
-<<<<<<< HEAD
     public function addStockTag() {
 
         $res_isLogin = $this->isLogin();
@@ -248,12 +223,6 @@ class TagController extends CommonController {
         $name = I('name', "");
         $abbrev = I('abbrev', -1);
         $spell = I('spell', "");
-=======
-    public function addTag() {
-    	$HYGN = I('HYGN', -1);
-        $market = I('market', -1);
-        $name = I('name', "");
->>>>>>> FETCH_HEAD
 
         $condition = "1=1";
 
@@ -270,7 +239,6 @@ class TagController extends CommonController {
         $Model = M('Tag');
         $list = $Model->where($condition)->select();
 
-<<<<<<< HEAD
         if($list == null){
             $data['type'] = $HYGN;
             $data['subtype'] = $market;
@@ -476,50 +444,6 @@ class TagController extends CommonController {
             $condition = "available!='0' and (name='".$value."' or abbrev='".$value."' or spell='".$value."')";
         }
         $list = $Model->where($condition)->select();
-=======
-        if($list || $list == null){
-            $code = -1;
-            $msg = "is exist";
-            if($list == null){
-                $data['type'] = $HYGN;
-                $data['subtype'] = $market;
-                $data['name'] = $name; 
-                $listAdd = $Model->add($data);
-                if($listAdd){
-                	$code = 0;
-            		$msg = "add suc";
-                }else{
-                	$listAdd = Array();
-		            $code = 20401;
-		            $msg = "add tag failed";
-                }
-                $list = $listAdd;
-            }else{
-            	//已经存在
-            	$this->ajaxOutput($code, $msg, array('list'=>array()));
-            }
-        }else{
-            $list = Array();
-            $code = 20401;
-            $msg = "add tag failed";
-        }
-        
-        $this->ajaxOutput($code, $msg, array('list'=>$list));    
-    }
-
-    public function delTag() {
-        $tagid = I('tagid', -1);
-
-        $condition = "1=1";
-
-        if($tagid != -1 && $tagid != 0){
-            $condition = $condition." and id='".$tagid."'";
-        }
-
-        $Model = M('Tag');
-        $list = $Model->where($condition)->delete();
-
->>>>>>> FETCH_HEAD
         if($list || $list == null){
             $code = 0;
             $msg = "suc";
@@ -528,16 +452,9 @@ class TagController extends CommonController {
             }
         }else{
             $list = Array();
-<<<<<<< HEAD
             $code = -1;
             $msg = "没有找到";
         }
         $this->ajaxOutput($code, $msg, array('list'=>$list)); 
-=======
-            $code = 20401;
-            $msg = "del tag failed";
-        }
-        $this->ajaxOutput($code, $msg, array('list'=>$list));    
->>>>>>> FETCH_HEAD
     }
 }

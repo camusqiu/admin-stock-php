@@ -6,17 +6,11 @@ use Home\Controller\CommonController;
  * “股吧”控制器类。
  */ 
 class StockBarController extends CommonController {
-<<<<<<< HEAD
 		private $id = "";
 		private $type = "";
         private $code = "";
 		private $order = "";
         private $state = "";
-=======
-		private $type = "";
-        private $code = "";
-		private $order = "";
->>>>>>> FETCH_HEAD
 		private $condition = "1=1";
 		private $curpage = 1;
     	private $pagenum = 10;
@@ -33,14 +27,11 @@ class StockBarController extends CommonController {
 	        if($typeTemp>=0){
 	            $this->type = $typeTemp;
 	        }
-<<<<<<< HEAD
 
             $StateTemp = I('param.state',-1);
             if($StateTemp>=0){
                 $this->state = $StateTemp;
             }
-=======
->>>>>>> FETCH_HEAD
 	        
 	        $orderTemp = I('param.order',-1);
 	        if($orderTemp>=0){
@@ -60,13 +51,9 @@ class StockBarController extends CommonController {
 
 		public function getCondition(){
 			if($this->type){
-<<<<<<< HEAD
                 if($this->type!=5){
 	                $conditionTemp = sprintf(" and type='%s'", $this->type);
                 }
-=======
-	            $conditionTemp = sprintf(" and type='%s'", $this->type);
->>>>>>> FETCH_HEAD
 	            $this->condition = $this->condition.$conditionTemp;
 	        }
 
@@ -75,7 +62,6 @@ class StockBarController extends CommonController {
                 $this->condition = $this->condition.$conditionTemp;
             }
 
-<<<<<<< HEAD
             if($this->state){
                 if ($this->state!=6 && $this->state==5) {
                     $conditionTemp = sprintf(" and list_date=''");
@@ -84,8 +70,6 @@ class StockBarController extends CommonController {
                 }
                 $this->condition = $this->condition.$conditionTemp;
             }
-=======
->>>>>>> FETCH_HEAD
 		}
 
         public function get(){
@@ -102,7 +86,6 @@ class StockBarController extends CommonController {
             $this->ajaxOutput(0, '', array('list'=>$list));
         }
 
-<<<<<<< HEAD
         public function getStockNum(){
 
             if($type != "-1" && $type >= 1 && $type <= 4){
@@ -117,8 +100,6 @@ class StockBarController extends CommonController {
 
         }
 
-=======
->>>>>>> FETCH_HEAD
         public function getStockCode(){
 
             $res_isLogin = $this->isLogin();
@@ -139,12 +120,8 @@ class StockBarController extends CommonController {
             $this->pagenum = I('param.pagenum',10);
 
             $condition = "1=1";
-<<<<<<< HEAD
             //if($type != "-1" && $type >= 1 && $type <= 4){
             if($type != "-1" && $type >= 1 && $type <= 4){
-=======
-            if($type != "-1"){
->>>>>>> FETCH_HEAD
                 $condition = $condition." and type='".$type."'";
             }
 
@@ -189,10 +166,6 @@ class StockBarController extends CommonController {
                     $this->ajaxOutput(20402, "limit ", array('list'=>Array()));
                 }
             }
-<<<<<<< HEAD
-=======
-            
->>>>>>> FETCH_HEAD
 
             $this->getReqParam();
             $this->getCondition();
@@ -204,10 +177,7 @@ class StockBarController extends CommonController {
             $num = $Model->where($this->condition)->count();
 
             $list = $Model->where($this->condition)->order(" id asc")->page($this->curpage, $this->pagenum)->select();
-<<<<<<< HEAD
 //            print_r($list);
-=======
->>>>>>> FETCH_HEAD
             if($list){
                 for($i = 0; $i < count($list); $i++){
                     $list[$i]['ucode'] =  makeBarCode($list[$i]['code'], $list[$i]['class']);
@@ -218,7 +188,6 @@ class StockBarController extends CommonController {
                         $msg = "tag init find suc";
                         if($listTagInit == null){
                             $listTagInit = array();
-<<<<<<< HEAD
                             $this->ajaxOutput(0, 'suc', array('count'=>$num, 'list'=>$list));
                         }
 
@@ -234,15 +203,6 @@ class StockBarController extends CommonController {
                              $list[$i]['hy_tag'] = $listTagHY[0]['id'];
                              $list[$i]['hy_name'] = $list[$i]['hy_name']." / ".$listTagHY[0]['name'];
                         }
-=======
-                            $this->ajaxOutput(0, 'suc', array('count'=>$num, 'list'=>$listTagInit));
-                        }
-
-                        //获取所属行业名称
-                        $listTagHY = $ModelTag->where("id='".$listTagInit[0]['hy_tag']."'")->select();
-                        $list[$i]['hy_tag'] = $listTagHY[0]['id'];
-                        $list[$i]['hy_name'] = $listTagHY[0]['name'];
->>>>>>> FETCH_HEAD
 
                         //获取所属行业名称
                         $arrayTagGN = explode("_", $listTagInit[0]['gn_tag']);
@@ -263,7 +223,6 @@ class StockBarController extends CommonController {
         }
 
 
-<<<<<<< HEAD
         public function getBanchStockList(){
             $res_isLogin = $this->isLogin();
             if(!$res_isLogin){
@@ -306,8 +265,6 @@ class StockBarController extends CommonController {
 
 
 
-=======
->>>>>>> FETCH_HEAD
          public function getStock(){
 
             $res_isLogin = $this->isLogin();
@@ -330,20 +287,7 @@ class StockBarController extends CommonController {
             $Model = M('StockBar');
             $ModelComment = M('CommentCount');
             $ModelPostTime = M('PostBar');
-<<<<<<< HEAD
            
-=======
-            // if($this->type){
-            // 	$count = $Model->where("type='".$this->type."'")->count();
-            // }else{
-            // 	$count = $Model->count();	
-            // }
-            
-            // if(!$count){
-            // 	$this->ajaxOutput(20400, '', array('count'=>"0", 'list'=>array()));
-            // }
-
->>>>>>> FETCH_HEAD
             if($this->order != "2"){
             	//按发帖数排序
             	$this->readFile();
@@ -390,7 +334,6 @@ class StockBarController extends CommonController {
             }else if ($this->order == "2"){
             	//按回复数排序
             	$this->userRespNumInsert();
-<<<<<<< HEAD
                 if($this->type){
                     if (intval($this->type) < 5 && intval($this->type) > 0) {
                         $conditionTemp = sprintf("time>'%s' and type='%s'", date('Y-m-d'), $this->type);
@@ -404,13 +347,6 @@ class StockBarController extends CommonController {
             		for($i = 0; $i < count($list); $i++){
                         $condition = " code='".$list[$i]['code']."'";
             			$listTemp = $Model->where($condition)->select();
-=======
-            	$list = $ModelComment->where("time>'".date('Y-m-d')."'")->order('resp_num desc')->page($this->curpage, $this->pagenum)->select();
-            	$num = count($list);
-            	if($list){
-            		for($i = 0; $i < count($list); $i++){
-            			$listTemp = $Model->where(" code='".$list[$i]['code']."'")->select();
->>>>>>> FETCH_HEAD
             			$list[$i]['todayPost'] = $list[$i]['post_num'] ? $list[$i]['post_num'] : 0;
             			$list[$i]['todayResp'] = $list[$i]['resp_num'];
             			$list[$i]['type'] = $listTemp[0]['type'];
@@ -444,11 +380,8 @@ class StockBarController extends CommonController {
         	$spell = I('param.spell',-1);
         	$state = I('param.state',-1);
             $class = I('param.classtype',-1);
-<<<<<<< HEAD
             $list_date = I('param.list_date',-1);
             $updata_lock = I('param.updata_lock',-1);
-=======
->>>>>>> FETCH_HEAD
 
         	if($id != -1){
         		$listData['id'] = $id;
@@ -477,7 +410,6 @@ class StockBarController extends CommonController {
             if($class != -1){
                 $listData['class'] = $class;
             }
-<<<<<<< HEAD
             if($list_date != -1){
                 $listData['list_date'] = $list_date;
             }
@@ -538,18 +470,6 @@ class StockBarController extends CommonController {
 
                     $list = $Model->add($listData);
                     $this->reIndexStock($list);
-=======
-
-        	if($id>0){
-        		$list = $Model->where("id='".$id."'")->save($listData);
-        	}else {
-                $list = $Model->where("code='".$code."'")->select($listData);
-                if($list){
-                    $this->ajaxOutput(-1, 'code exist', array('count'=>count($list), 'list'=>$list));
-                }else{
-                    $list = $Model->add($listData);
-                    $this->reIndexStock($list[0]['id']);
->>>>>>> FETCH_HEAD
                 }
         	}
         	
@@ -568,7 +488,6 @@ class StockBarController extends CommonController {
             if ($state != -1 && $id>0) {
                 $this->reIndexStock($id);
             }
-<<<<<<< HEAD
 
             //交易中变退市  或者  退市变交易中
             if ($id>0 && (($state == 3 && $SBList[0]['state'] == 1) || ($state == 3 && $SBList[0]['state'] == 2) || ($state == 1 && $SBList[0]['state'] == 3) || ($state == 2 && $SBList[0]['state'] == 3))) {
@@ -634,11 +553,6 @@ class StockBarController extends CommonController {
             }
         }
 
-=======
-            $this->ajaxOutput($code, 'suc', array('count'=>count($list), 'list'=>$list));
-        }
-
->>>>>>> FETCH_HEAD
         public function delStockBar () {
         	$Model = M('StockBar');
         	$res_isLogin = $this->isLogin();
@@ -677,10 +591,7 @@ class StockBarController extends CommonController {
             }else{
                 curl_setopt($curl, CURLOPT_URL, 'http://www.richba.com/index.php?m=home&c=cmd&a=reIndexStock'); 
             }
-<<<<<<< HEAD
 
-=======
->>>>>>> FETCH_HEAD
             
 
             // 设置header 
@@ -780,10 +691,7 @@ class StockBarController extends CommonController {
         	$Model = M('Comment');
 			$ModelBar = M('PostBar');
 			$ModelComment= M('CommentCount');
-<<<<<<< HEAD
             $ModelStockBar= M('StockBar');
-=======
->>>>>>> FETCH_HEAD
 			$time = date('Y-m-d');
 			//$time = "2015-01-26";
 			$list = $Model->distinct(true)->field('post_id')->where(" ctime>'".$time."'")->select();
@@ -793,18 +701,12 @@ class StockBarController extends CommonController {
 					$listBar = $ModelBar->where(" post_id='".$list[$i]['post_id']."'")->order('ctime')->limit(1)->select();
 					if($listBar){
 	                    $listData[$i]['code'] = $listBar[0]['bar_code'];
-<<<<<<< HEAD
                         $listDataStockBarClass = $ModelStockBar->where(" id='".$listBar[0]['bar_id']."'")->select();
 	                    //$listData[$i]['class'] = $listBar[0]['bar_code'];
 						$count = $Model->where(" post_id='".$list[$i]['post_id']."'")->count();
 						$listData[$i]['resp_num'] = $count;
                         $listData[$i]['class'] =  $listDataStockBarClass[0]['class']; 
                         $listData[$i]['type'] =  $listDataStockBarClass[0]['type']; 
-=======
-	                    //$listData[$i]['class'] = $listBar[0]['bar_code'];
-						$count = $Model->where(" post_id='".$list[$i]['post_id']."'")->count();
-						$listData[$i]['resp_num'] = $count;
->>>>>>> FETCH_HEAD
                        // $listData[$i]['lastPost'] = $listBar[0]['ctime'];
 					} 
 				}
@@ -813,11 +715,7 @@ class StockBarController extends CommonController {
 	        
 			 $num = count($listData);
 			 for($i = 0; $i < $num; $i++){
-<<<<<<< HEAD
 			 	$list = $ModelComment->where("code='".$listData[$i]['code']."' and class='".$listData[$i]['class']."'")->select();
-=======
-			 	$list = $ModelComment->where("code='".$listData[$i]['code']."'")->select();
->>>>>>> FETCH_HEAD
 			 	if($list){
 			 		$list = $ModelComment->where()->save($listData[$i]);
 			 	}else{
@@ -829,11 +727,7 @@ class StockBarController extends CommonController {
 
         //public function 
     /**
-<<<<<<< HEAD
      * 
-=======
-     * 获取资讯信息
->>>>>>> FETCH_HEAD
     **/
     public function search(){
 
@@ -842,11 +736,8 @@ class StockBarController extends CommonController {
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
 
-<<<<<<< HEAD
         $curpage = I('param.curpage',1);
         $pagenum = I('param.pagenum',10);
-=======
->>>>>>> FETCH_HEAD
         $value = I('param.value',-1);
         $this->type = '5';
 
@@ -857,13 +748,9 @@ class StockBarController extends CommonController {
         $ModelPostTime = M('PostBar');
         $condition = "1=1 and (code='".$value."' or abbrev='".$value."' or spell='".$value."' or name='".$value."')";
 
-<<<<<<< HEAD
         $allnum = $Model->where($condition)->count();
         $list = $Model->where($condition)->page($curpage, $pagenum)->select();
        // $list = $Model->where($condition)->select();
-=======
-        $list = $Model->where($condition)->select();
->>>>>>> FETCH_HEAD
 
        // echo "con:".$condition."| count:".count($list);
  
@@ -917,11 +804,7 @@ class StockBarController extends CommonController {
             $msg = "no result";
         }
 
-<<<<<<< HEAD
         $this->ajaxOutput(0, '', array('count'=>$allnum, 'user_id'=>$res_isLogin, 'list'=>$list));
-=======
-        $this->ajaxOutput(0, '', array('count'=>count($list), 'user_id'=>$res_isLogin, 'list'=>$list));
->>>>>>> FETCH_HEAD
     }
 
 }

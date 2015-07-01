@@ -31,17 +31,13 @@ class UserController extends CommonController {
         $orderby = I('param.order',-1);
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
-<<<<<<< HEAD
         $userType = I('param.usertype',0);
-=======
->>>>>>> FETCH_HEAD
         $this->condition = "1=1";
         $ctime = I('param.ctime',date('Y-m-d'));
         $ctimeend = I('param.ctimeend',date('Y-m-d'));
         $Model = M('User');	
         $ModelLogin = M('LoginStats');	
         $ModelPost = M('Post');	
-<<<<<<< HEAD
 //        $ModelMoney = M('FundManagement'); 
 
 		$conditionTemp = sprintf(" and ctime>'%s' and ctime<'%s'", $ctime, $ctimeend." 23:59:59");
@@ -77,20 +73,6 @@ class UserController extends CommonController {
             }
         }
 		
-=======
-        $ModelMoney = M('FundManagement'); 
-
-		$conditionTemp = sprintf(" and ctime>'%s' and ctime<'%s'", $ctime, $ctimeend." 23:59:59");
-		$this->condition = $this->condition.$conditionTemp;
-
-		$numall = $Model->where($this->condition)->count();
-
-        if ($orderby > 0) {
-            $list = $Model->where($this->condition)->order('ctime desc')->select();
-        }else{
-            $list = $Model->where($this->condition)->order('ctime desc')->page($this->curpage, $this->pagenum)->select();
-        }
->>>>>>> FETCH_HEAD
 
     	$num = count($list);
         if($list){
@@ -113,16 +95,6 @@ class UserController extends CommonController {
         			$list[$i]['lastposttime'] = "";
         		}
 
-<<<<<<< HEAD
-=======
-                $listMoney = $ModelMoney->where("user_id='".$list[$i]['id']."'")->order("ctime desc")->limit(1)->select();
-                if($listMoney){
-                    $list[$i]['balance'] = $listMoney[0]['balance'];
-                }else{
-                    $list[$i]['balance'] = 0.00;
-                }
-
->>>>>>> FETCH_HEAD
         		//用户粉丝数
         		$listTemp = $redis->ZSCORE($keyFans, $list[$i]['id']);
 	            $list[$i]['fans'] = $listTemp ? $listTemp : 0;
@@ -155,10 +127,7 @@ class UserController extends CommonController {
 
         $listTemp = array();
         $num = count($list);
-<<<<<<< HEAD
 
-=======
->>>>>>> FETCH_HEAD
         if ($value == 1) {  //order by fans
             for ($i=0; $i < $num - 1; $i++) { 
                 $max = $list[$i]['fans'];
@@ -193,21 +162,12 @@ class UserController extends CommonController {
             }
         }else if($value == 3){  //order by balance
             for ($i=0; $i < $num - 1; $i++) { 
-<<<<<<< HEAD
                 $max = $list[$i]['fund'];
                 $listTemp = $list[$i];
                 $tag = $i;
                 for ($j=$i+1; $j < $num; $j++) { 
                     if ($list[$j]['fund'] > $max) {
                         $max = $list[$j]['fund'];
-=======
-                $max = $list[$i]['[balance]'];
-                $listTemp = $list[$i];
-                $tag = $i;
-                for ($j=$i+1; $j < $num; $j++) { 
-                    if ($list[$j]['balance'] > $max) {
-                        $max = $list[$j]['balance'];
->>>>>>> FETCH_HEAD
                         $list[$i] = $list[$j];
                         $tag = $j;
                     }
@@ -216,11 +176,7 @@ class UserController extends CommonController {
 
             }
         }
-<<<<<<< HEAD
         
-=======
-
->>>>>>> FETCH_HEAD
         $tag = $this->pagenum*($this->curpage-1);
         for ($i=0; $i < $this->pagenum && $i < $num-$tag; $i++) { 
             $listShow[$i] = $list[$tag+$i]; 
@@ -242,7 +198,6 @@ class UserController extends CommonController {
         $state = I('param.state',-1);
         $id = I('param.id',-1);
 
-<<<<<<< HEAD
         $LData['table_name'] = "User";
         $LData['type'] = 1;
         $LData['admin_id'] = $res_isLogin;
@@ -329,15 +284,6 @@ class UserController extends CommonController {
 
                 $LData['code'] = 0;
                 $LData['msg'] = "user:[锁定/禁言: id ".$id." state ".$state." 锁定/禁言]";
-=======
-        $condition = "id='".$id."'";
-        $list = $Model->where($condition)->select();
-        if($list){
-            if($list[0]['state'] == $state){
-                $data['state'] = "1";
-            }else {
-                $data['state'] = $state;
->>>>>>> FETCH_HEAD
             }
 
             if($state != -1){
@@ -355,27 +301,20 @@ class UserController extends CommonController {
                 $code = -1;
                 $msg = "updateUserInfo failed!"; 
                 $list = array();
-<<<<<<< HEAD
 
                 $LData['code'] = -1;
                 $LData['msg'] = "user:[(取消)锁定/禁言: id ".$id." exstate ".$list[0]['state']." nowstate ".$state." (取消)锁定/禁言操作失败]";
             }
             aLog($LData);
-=======
-            }
->>>>>>> FETCH_HEAD
 
         }else{
             $code = -1;
             $msg = "search user info failed!"; 
             $list = array();
         }
-<<<<<<< HEAD
 
         
         
-=======
->>>>>>> FETCH_HEAD
         
         $this->ajaxOutput($code, $msg, array('count'=>count($list), 'list'=>$list));
     }    

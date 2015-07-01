@@ -3,10 +3,9 @@ namespace Home\Controller;
 use Home\Controller\CommonController;
 
 /**
-<<<<<<< HEAD
  * “帖子”控制器类。
  */ 
-class PostController extends CommonController {
+class PostBakController extends CommonController {
 
     private $listData = "";
     private $condition = "";
@@ -772,7 +771,7 @@ class PostController extends CommonController {
         $this->ajaxOutput($code, $msg, array('list'=>$list));
     }
 
-    //
+   //吧贴管理按用户查找
     public function search(){
 
         $value = I('param.value',-1);
@@ -782,7 +781,49 @@ class PostController extends CommonController {
             
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
-        
+
+        $ctime = I('param.ctime',date('Y-m-d'));
+        $ctimeend = I('param.ctimeend',date('Y-m-d'));
+
+        $type = I('param.type',-1);
+        $undel = I('param.undel',-1);
+        $essential_state = I('param.essential_state',-1);
+        $sticky_state = I('param.sticky_state',-1);
+        $index_recom_state = I('param.index_recom_state',-1);
+        $state = I('param.state',-1);
+        $audit_state = I('param.audit_state',-1);
+
+        $this->condition = "1=1 ";
+        if($type == 1){
+            $this->condition = $this->condition." and type=".$type;
+        }
+        if($essential_state == 1){
+            $this->condition = $this->condition." and essential_state=".$essential_state;
+        }
+        if($sticky_state == 1){
+            $this->condition = $this->condition." and sticky_state=".$sticky_state;
+        }
+        if($index_recom_state == 1){
+            $this->condition = $this->condition." and index_recom_state=".$index_recom_state;
+        }
+        if($state == 0){
+            $this->condition = $this->condition." and state=".$state;
+        }else{
+            $this->condition = $this->condition." and state='1'";
+        }
+        if($audit_state != 0){
+            $this->condition = $this->condition." and audit_state='".$audit_state."'";
+        }
+
+        if($ctime){
+          $this->condition = $this->condition." and ctime>='".$ctime."'";
+        }
+
+        if($ctimeend){
+          $this->condition = $this->condition." and ctime<='".$ctimeend." 23:59:59'";
+        }
+
+
         //user表查发帖用户id
         $listTemp = $ModelUser->where("name='".$value."'")->select();
         if($listTemp){
@@ -791,7 +832,8 @@ class PostController extends CommonController {
             
             $num = $Model->where("user_id='".$listTemp[0]['id']."'")->count();
             //post表插用户所有贴， admin处理人
-            $list = $Model->where("user_id='".$listTemp[0]['id']."'")->page($this->curpage, $this->pagenum)->select();
+            $this->condition = $this->condition." and user_id='".$listTemp[0]['id']."'";
+            $list = $Model->where($this->condition)->page($this->curpage, $this->pagenum)->select();
             if($list){
                 $code = 0;
                 $msg = "suc";
@@ -820,20 +862,29 @@ class PostController extends CommonController {
                     }
                     
                 }
+            }else if($list == null){
+                $list = Array();
+                $code = 0;
+                $msg = "no data";
             }else{
                 $list = Array();
                 $code = 10001;
-                $msg = "no data";
+                $msg = "search error";
             }
 
-        }else{
+        }else if($listTemp == null){
+            $list = Array();
+            $code = 0;
+            $msg = "no data";
+        }else {
             $list = Array();
             $code = 10001;
-            $msg = "no data";
+            $msg = "search error";
         }
 
-        $this->ajaxOutput($code, $msg, array('count'=>$num,'list'=>$list));    
+        $this->ajaxOutput($code, $msg, array('count'=>count($list),'list'=>$list));    
     }
+
 
 
     public function reIndexStock($id, $uid){
@@ -861,9 +912,4 @@ class PostController extends CommonController {
     }
 
 
-=======
- * “帖子标签”控制器类。
- */ 
-class PostBarController extends CommonController {
->>>>>>> FETCH_HEAD
 }

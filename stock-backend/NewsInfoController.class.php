@@ -30,10 +30,7 @@ class NewsInfoController extends CommonController {
     private $index_recom_state= "";
     private $strtag_id= "";
     private $strbar_id= "";
-<<<<<<< HEAD
     private $strbar_id_hide= "";
-=======
->>>>>>> FETCH_HEAD
     private $user_id= "";
     
     /*
@@ -50,20 +47,13 @@ class NewsInfoController extends CommonController {
     **/
     //public function getReqParam(&$id, &$type, &$title, &$state, &$time, &$ctime, &$source, &$sticky_state, &$essential_state,  &$index_recom_state, &$strtag_id, $strbar_id, &$content, &$user_id, $curpage, &$pagenum, &$item){
     public function getReqParam(){    
-<<<<<<< HEAD
     /*
-=======
->>>>>>> FETCH_HEAD
         $idTemp = I('param.id',-1);
         if($idTemp>=0){
             $this->id = $idTemp;
             $this->item["id"] = $idTemp;
         }
-<<<<<<< HEAD
      */   
-=======
-        
->>>>>>> FETCH_HEAD
         $typeTemp = I('param.type',-1);
         if($typeTemp>=0){
             $this->type = $typeTemp;
@@ -171,10 +161,7 @@ class NewsInfoController extends CommonController {
             //$this->item["strbar_id"] = str_replace(';', '/', $strbar_id_Temp);
         }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> FETCH_HEAD
         $user_id_Temp = I('param.user_id',-1);
         if($user_id_Temp>=0){
             $this->user_id = $user_id_Temp;
@@ -364,7 +351,6 @@ class NewsInfoController extends CommonController {
         $this->getConditon();
                 
         $Model = M('NewsInfo');
-<<<<<<< HEAD
         $ModelAdmin = M('Admin');
         $ModelPost = M('Post');
 
@@ -392,15 +378,6 @@ class NewsInfoController extends CommonController {
                 $listView = $redis->ZSCORE($key, $listPost[0]['id']);
                 $list[$i]['view'] = $listView?$listView:0;
             }
-=======
-
-        $allnum = $Model->where($this->condition)->count();
-
-        if($allnum > 0){
-            $code = 0;
-            $msg = "suc";
-            $list = $Model->where($this->condition)->order('modify_time desc')->page($this->curpage, $this->pagenum)->select();
->>>>>>> FETCH_HEAD
         }else{
             $list = Array();
             $code = 0;
@@ -479,11 +456,7 @@ class NewsInfoController extends CommonController {
 
         }else{
 
-<<<<<<< HEAD
             $allnum = $Model->master(true)->where($this->condition)->count();
-=======
-            $allnum = $Model->where($this->condition)->count();
->>>>>>> FETCH_HEAD
 
             if($allnum >=0 && $this->state == 0){
                 if ($allnum < $this->num) {
@@ -621,7 +594,6 @@ class NewsInfoController extends CommonController {
             $this->item["source"]=CH($this->item["source"], "tiezi");
         }
 
-<<<<<<< HEAD
         
         $list = $Model->where($this->condition)->select();
         //记录发布多条退回补救
@@ -631,8 +603,6 @@ class NewsInfoController extends CommonController {
         }
     
 
-=======
->>>>>>> FETCH_HEAD
         $list = $Model->where($this->condition)->save($this->item);
         if($list || 0 === $list){
             $code = 0;
@@ -653,19 +623,13 @@ class NewsInfoController extends CommonController {
             $this->item = Array();
         }
     
-<<<<<<< HEAD
         $detailmsg = $detailmsg."state:".$this->item['state'];
        
         if($this->item['state'] == 5 || $this->item['state'] == 3 || $isRetreat == 1){
-=======
-       
-        if($this->item['state'] == 5 || $this->item['state'] == 3){
->>>>>>> FETCH_HEAD
             $NewsModel = M('NewsInfo');
             $PostModel = M('Post');
             $Post_tag_Model = M('PostTag');
             $Post_bar_Model = M('PostBar');
-<<<<<<< HEAD
             $Dynamic = D('Dynamic');
             //获取newsinfo资讯状态
             $idTemp = I('param.id',-1);
@@ -675,44 +639,28 @@ class NewsInfoController extends CommonController {
             }
             
             $detailmsg = $detailmsg." id:".$this->item['id'];
-=======
-            //获取newsinfo资讯状态
->>>>>>> FETCH_HEAD
             $selectData = $NewsModel->where('id='.$this->item['id'])->select();
             if($selectData){
                 $itemTemp = $selectData[0];
             }
 
 
-<<<<<<< HEAD
             $detailmsg = $detailmsg." url:".$itemTemp['url'];
             $strUrl = "state='1' and source_url='".$itemTemp['url']."'";
             $post_idTemp = $PostModel->where($strUrl)->select();
             $post_id = $post_idTemp[0]['id'];
             
             $detailmsg = $detailmsg." post_id:".$post_id;
-=======
-            $strUrl = "source_url='".$itemTemp['url']."'";
-            $post_idTemp = $PostModel->where($strUrl)->select();
-            $post_id = $post_idTemp[0]['id'];
-            
->>>>>>> FETCH_HEAD
             //删除不存在post
             $strCondition = "id='".$post_id."'";
             $Post_list = $PostModel->where($strCondition)->select();
 
-<<<<<<< HEAD
             
             $this->reIndexStock($post_id, "1000001");
             
             //删除新闻公告动态消息
             $delPostData['post_id'] = $post_id;
             $Dynamic->delStockDynamicInfo($delPostData);
-=======
-            $this->reIndexStock($post_id, "1000001");
-            
-
->>>>>>> FETCH_HEAD
             /*
             if($code != 10001 && $Post_list){
                 $num = count($Post_list);
@@ -783,11 +731,7 @@ class NewsInfoController extends CommonController {
         }
 
 
-<<<<<<< HEAD
         $this->ajaxOutput(0, $detailmsg."pid:".$post_id, array('count'=>$list,'list'=>$this->item));
-=======
-        $this->ajaxOutput(0, $detailmsg, array('count'=>$list,'list'=>$this->item));
->>>>>>> FETCH_HEAD
     }
     
 
@@ -877,7 +821,6 @@ class NewsInfoController extends CommonController {
         curl_close($curl); 
     }
     
-<<<<<<< HEAD
 
     public function getRideSymbol(){
         //$abc = I('param.abc',-1);
@@ -906,8 +849,6 @@ class NewsInfoController extends CommonController {
     }
 
 
-=======
->>>>>>> FETCH_HEAD
     /**
      * 发布
     **/
@@ -938,17 +879,11 @@ class NewsInfoController extends CommonController {
          //获取newsinfo资讯状态
          $selectData = $NewsModel->where($this->condition)->select();
          $stateTemp = $selectData[0]['state'];
-<<<<<<< HEAD
          //$strtag_id_Temp = $selectData[0]['strtag_id'];
          // $strbar_id_Temp = "/".$selectData[0]['strbar_id']."/";
          // $strbar_id_Temp_hide = "/".$selectData[0]['strbar_id_hide']."/";
 
                  
-=======
-         $strtag_id_Temp = $selectData[0]['strtag_id'];
-         $strbar_id_Temp = "/".$selectData[0]['strbar_id']."/";
-         
->>>>>>> FETCH_HEAD
          //保存数据
          $this->item['state'] = 1;
          $myuser_id = 1010101;
@@ -976,10 +911,7 @@ class NewsInfoController extends CommonController {
          }
          
          
-<<<<<<< HEAD
          $this->getRideSymbol();
-=======
->>>>>>> FETCH_HEAD
          //step 2，判断post表是否已经存在 存在则update数据，否则写入
          $PostModel = M('post');
          if(!$code && $selectData){
@@ -1097,11 +1029,7 @@ class NewsInfoController extends CommonController {
                      //删除不存在的关联
                      $strCondition = "post_id='".$post_id."'";
 
-<<<<<<< HEAD
                      //$this->strbar_id_hide = str_replace(';', '/', $this->strbar_id_hide);
-=======
-
->>>>>>> FETCH_HEAD
                      $this->item['strbar_id'] = str_replace(';', '/', $this->item['strbar_id']);
                      $Post_bar_list = $Post_bar_Model->where($strCondition)->select();
                      if($code != 10001 && $Post_bar_list){
@@ -1137,44 +1065,27 @@ class NewsInfoController extends CommonController {
                      }   
                            
                      //插入新的关联      
-<<<<<<< HEAD
                      //if($this->item['strbar_id'] && $this->item['strbar_id'] != "nil"){
                      if($this->strbar_id_hide && $this->strbar_id_hide != "nil"){
                          //$arrayBar = explode("/", $this->item['strbar_id']);
                          $arrayBar = explode("/", $this->strbar_id_hide);
-=======
-                     if($this->item['strbar_id'] && $this->item['strbar_id'] != "nil"){
-                         $arrayBar = explode("/", $this->item['strbar_id']);
->>>>>>> FETCH_HEAD
 
                          $num = count($arrayBar);
                          $Stock_bar_Model = M('StockBar');
                          $datalist = array();
-<<<<<<< HEAD
                          $bar_ids = array();
                          for($i = 0, $j = 0, $k = 0; $i < $num; $i++){
                             if($code != 10001 && !strstr($strbar_id_Post, "/".$arrayBar[$i]."/")){
                                  //$strCondition = "code='".$arrayBar[$i]."'";
                                  $strCondition = "id='".$arrayBar[$i]."'";
-=======
-
-                         for($i = 0, $j = 0; $i < $num; $i++){
-                            if($code != 10001 && !strstr($strbar_id_Post, "/".$arrayBar[$i]."/")){
-                                 $strCondition = "code='".$arrayBar[$i]."'";
->>>>>>> FETCH_HEAD
 
                                  $Stock_bar_list = $Stock_bar_Model->where($strCondition)->select();
                                  if($Stock_bar_list != false && $Stock_bar_list){
                                     $bar_idTemp =  $Stock_bar_list[0]['id'];
-<<<<<<< HEAD
                                     $bar_codeTemp =  $Stock_bar_list[0]['code'];
                                     $bar_typeTemp =  $Stock_bar_list[0]['type'];
                                     $datalist[$j++] = array('post_id'=>$post_id,'bar_id'=>$bar_idTemp, 'bar_code'=>$bar_codeTemp, 'bar_type'=>$bar_typeTemp);
                                     $bar_ids[$k++] = $bar_idTemp;
-=======
-                                    $bar_typeTemp =  $Stock_bar_list[0]['type'];
-                                    $datalist[$j++] = array('post_id'=>$post_id,'bar_id'=>$bar_idTemp, 'bar_code'=>$arrayBar[$i], 'bar_type'=>$bar_typeTemp);
->>>>>>> FETCH_HEAD
 
                                     $redis = S(array('type'=>'Redis'));
                                     $keyBarAll = "bar_post_count_total";
@@ -1200,14 +1111,10 @@ class NewsInfoController extends CommonController {
                          
                             if($list_post_bar){                                                                                                                       
                               $code = 0;                                                                                                                            
-<<<<<<< HEAD
                               $msg = $msg."add post_bar suc!";
                               //发送关注动态
                               if($stateTemp == 3){
                                 $this->dynamicInfo($post_id, $this->data['user_id'], $this->data['type'], $bar_ids);                                                                              }
-=======
-                              $msg = $msg."add post_bar suc!";                                                                                                      
->>>>>>> FETCH_HEAD
                             }else{                                                                                                                                    
                               $code = 10001;                                                                                                                        
                               $msg = $msg."post_bar table[add failed]!";                                                                                            
@@ -1225,14 +1132,9 @@ class NewsInfoController extends CommonController {
                  if($this->data['type'] > 2){
                     $this->data['type'] = 3;
                  }
-<<<<<<< HEAD
                  $this->data['admin_id'] = $myuser_id;
                  $this->data['user_id'] = "1000001";
                  $this->data['modify_time'] = date("Y-m-d h:i:s");
-=======
-                // $this->data['user_id'] = $myuser_id;
-                 $this->data['user_id'] = "1000001";
->>>>>>> FETCH_HEAD
                  $listPost = $PostModel->add($this->data);
                  if($listPost){
                      $code = 0;
@@ -1267,24 +1169,17 @@ class NewsInfoController extends CommonController {
                  }
 
                  //写post_bar标签s关联
-<<<<<<< HEAD
                  // if(!$code && $this->item['strbar_id']){
                  //     $this->item['strbar_id'] = str_replace(';', '/', $this->item['strbar_id']);
                  //     $arrayBar = explode("/", $this->item['strbar_id']);
                  if(!$code && $this->strbar_id_hide){
                      $this->strbar_id_hide = str_replace(';', '/', $this->strbar_id_hide);
                      $arrayBar = explode("/", $this->strbar_id_hide);
-=======
-                 if(!$code && $this->item['strbar_id']){
-                     $this->item['strbar_id'] = str_replace(';', '/', $this->item['strbar_id']);
-                     $arrayBar = explode("/", $this->item['strbar_id']);
->>>>>>> FETCH_HEAD
 
                      $num = count($arrayBar);
 
                      $Stock_bar_Model = M('StockBar');
                      $datalist = array();
-<<<<<<< HEAD
                      $bar_ids = array();
                      for($i = 0, $j = 0, $k = 0; $i < $num; $i++){
                          //$strCondition = "code='".$arrayBar[$i]."'";
@@ -1296,15 +1191,6 @@ class NewsInfoController extends CommonController {
                             $bar_typeTemp =  $Stock_bar_list[0]['type'];
                             $datalist[$j++] = array('post_id'=>$post_id,'bar_id'=>$bar_idTemp, 'bar_code'=>$bar_codeTemp, 'bar_type'=>$bar_typeTemp);
                             $bar_ids[$k++] = $bar_idTemp;
-=======
-                     for($i = 0, $j = 0; $i < $num; $i++){
-                         $strCondition = "code='".$arrayBar[$i]."'";
-                         $Stock_bar_list = $Stock_bar_Model->where($strCondition)->select();
-                         if($Stock_bar_list != false && $Stock_bar_list){
-                            $bar_idTemp =  $Stock_bar_list[0]['id'];
-                            $bar_typeTemp =  $Stock_bar_list[0]['type'];
-                            $datalist[$j++] = array('post_id'=>$post_id,'bar_id'=>$bar_idTemp, 'bar_code'=>$arrayBar[$i], 'bar_type'=>$bar_typeTemp);
->>>>>>> FETCH_HEAD
 
 
                             $redis = S(array('type'=>'Redis'));
@@ -1327,11 +1213,8 @@ class NewsInfoController extends CommonController {
                      if($list_post_bar){
                          $code = 0;
                          $msg = $msg."add post_bar suc!";
-<<<<<<< HEAD
                          //发送关注动态
                          $this->dynamicInfo($post_id, $this->data['user_id'], $this->data['type'], $bar_ids);
-=======
->>>>>>> FETCH_HEAD
                      }else{
                          $code = 10001;
                          $msg = $msg."post_bar table[add failed]!";
@@ -1351,7 +1234,6 @@ class NewsInfoController extends CommonController {
          
         $this->ajaxOutput($code, $msg, array('count'=>$listPost,'list'=>$this->data));
     }
-<<<<<<< HEAD
 
      //发送关注动态
     public function dynamicInfo ($post_id, $user_id, $post_type, $bar_ids) {
@@ -1407,6 +1289,4 @@ class NewsInfoController extends CommonController {
         */
         
     }
-=======
->>>>>>> FETCH_HEAD
 }

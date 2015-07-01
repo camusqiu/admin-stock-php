@@ -12,6 +12,7 @@ class PostController extends CommonController {
     private $curpage = 0;
     private $pagenum = 0;
     private $assignNumMax = 5;
+<<<<<<< HEAD
     private $msg;
     private $stime = "";
     private $etime = "";
@@ -19,6 +20,11 @@ class PostController extends CommonController {
     public function sortNewsInfo(){
         $this->stime=microtime(true);     
     
+=======
+
+    public function sortNewsInfo(){
+
+>>>>>>> FETCH_HEAD
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
@@ -29,7 +35,10 @@ class PostController extends CommonController {
         $transmit_count = I('param.transmit_count',-1);
         $recom_count = I('param.recom_count',-1);
         $comment_count = I('param.comment_count',-1);
+<<<<<<< HEAD
         $viewNum = I('param.viewNum',-1);
+=======
+>>>>>>> FETCH_HEAD
 
         $ctime = I('param.ctime',-1);
         $ctimeend = I('param.ctimeend',-1);
@@ -41,10 +50,13 @@ class PostController extends CommonController {
         $this->pagenum = I('param.pagenum',10);
 
         $Model = M('Post'); 
+<<<<<<< HEAD
         $ModelView = M('PostView'); 
         $ModelAdmin = M('Admin'); 
         $ModelUser = M('User'); 
         $ModelInfo = M('NewsInfo'); 
+=======
+>>>>>>> FETCH_HEAD
         if($essential_state && $essential_state>=0)
         {
             $conditionTemp = sprintf(" and essential_state=%s", $essential_state);
@@ -70,7 +82,11 @@ class PostController extends CommonController {
         }
         if($user_id && $user_id>=0)
         {
+<<<<<<< HEAD
             $conditionTemp = sprintf(" and admin_id='%s'", $user_id); 
+=======
+            $conditionTemp = sprintf(" and user_id='%s'", $user_id); 
+>>>>>>> FETCH_HEAD
             $this->condition = $this->condition.$conditionTemp;
         }
         if($state && $state>=0)
@@ -94,6 +110,7 @@ class PostController extends CommonController {
         {
             $strOrder = "comment_count desc";
             $list = $Model->where($this->condition)->order($strOrder)->page($this->curpage, $this->pagenum)->select();
+<<<<<<< HEAD
         }else if($viewNum!=0 && $viewNum!=-1){
 
             //从postview表中获取
@@ -268,10 +285,25 @@ class PostController extends CommonController {
     }
 
 
+=======
+        }else{
+            $list = $Model->where($this->condition)->order('ctime desc')->page($this->curpage, $this->pagenum)->select();
+        }
+        
+
+        $this->listData = $list;
+
+        $this->getUrl();
+
+        $this->ajaxOutput(0, '', array('count'=>$allnum, 'list'=>$this->listData));                                                                                                                               
+    }
+
+>>>>>>> FETCH_HEAD
     /**
      *
     **/
      public function getUrl(){
+<<<<<<< HEAD
 
         $Model = M('NewsInfo');
         $ModelPost = M('Post');
@@ -284,6 +316,20 @@ class PostController extends CommonController {
         $num = count($this->listData);
         for($i = 0; $i < $num; $i++){
             //$strCondition = sprintf("1=1 and url='%s' and title='%s'", $this->listData[$i]['source_url'], $this->listData[$i]['title']);
+=======
+        //实例化一个模型
+        $Model = M('NewsInfo');
+        $ModelPost = M('Post');
+
+        //读取10条数据（更多带条件的读取方法参见文档》模型》CURD操作说明）
+        $url = I('param.url',-1);
+        if($url && $url >= 0){
+            $arrayUrl = explode(";", $url);
+        }
+
+        $num = count($this->listData);
+        for($i = 0; $i < $num; $i++){
+>>>>>>> FETCH_HEAD
             $strCondition = sprintf("1=1 and url='%s'", $this->listData[$i]['source_url']);
             $list = $Model->where($strCondition)->select();
 
@@ -295,6 +341,7 @@ class PostController extends CommonController {
                 $this->listData[$i]['postid'] = $this->listData[$i]['id'];
                 $this->listData[$i]['id'] = $list[0]['id'];
                 $this->listData[$i]['user_id'] = $list[0]['user_id']; 
+<<<<<<< HEAD
             }else{//前端发帖,不写info表,导致数据无法查取,这里影响对前端发的帖子排序时的编辑
                 $list = Array();
                 $code = 0;
@@ -311,6 +358,18 @@ class PostController extends CommonController {
             if ($list) {
                 //$this->listData[$i]['source_url'] = "http://www.richba.com/article.html?id=".$list[0]['id'];
                 $this->listData[$i]['source_url'] = "http://www.richba.com/post/detail/".$list[0]['id'].".html";
+=======
+            }else{
+                $list = Array();
+                $code = 0;
+                $msg = "no result";
+                $this->ajaxOutput($code, $msg, array('count'=>count($list), 'list'=>$list));
+            }
+            $strCondition = sprintf("1=1 and source_url='%s'", $this->listData[$i]['source_url']);
+            $list = $ModelPost->where($strCondition)->select();
+            if ($list) {
+                $this->listData[$i]['source_url'] = "http://www.richba.com/article.html?id=".$list[0]['id'];
+>>>>>>> FETCH_HEAD
             }else{
                 $list = Array();
                 $code = 0;
@@ -354,10 +413,16 @@ class PostController extends CommonController {
         $audit_state = I('param.audit_state',-1);
 
         $this->condition = "1=1 ";
+<<<<<<< HEAD
         //if($type == 1){
         $type = 1;
         $this->condition = $this->condition." and type=".$type;
         //}
+=======
+        if($type == 1){
+            $this->condition = $this->condition." and type=".$type;
+        }
+>>>>>>> FETCH_HEAD
         if($essential_state == 1){
             $this->condition = $this->condition." and essential_state=".$essential_state;
         }
@@ -382,6 +447,7 @@ class PostController extends CommonController {
         $ModelUser = M('User'); 
 
         $conditionTemp = sprintf(" and ctime>'%s' and ctime<'%s' and admin_id ='%s'", $ctime, $ctimeend." 23:59:59", $res_isLogin);
+<<<<<<< HEAD
         $conditionTempAssignNum = sprintf(" and admin_id ='%s'", $res_isLogin);
 
         $this->condition = $this->condition.$conditionTemp;
@@ -392,17 +458,40 @@ class PostController extends CommonController {
         $assignNum = $Model->where($conditionTempAssignNum)->count();
 
         $list = $Model->where($this->condition)->order('ctime desc')->page($this->curpage, $this->pagenum)->select();
+=======
+        $this->condition = $this->condition.$conditionTemp;
+        $allnum = $Model->where($this->condition)->count();
+        $list = $Model->where($this->condition)->order('ctime desc')->page($this->curpage, $this->pagenum)->select();
+        //echo count($list);
+        //echo $this->condition;
+>>>>>>> FETCH_HEAD
 
         if($list || $list == null){
             $code = 0;
             $msg = "suc";
+<<<<<<< HEAD
             
             //分配池小于最大可分配数，补满
+=======
+            $assignNum = 0;
+            if($list){
+               $assignNum = count($list); 
+            }
+            
+
+            //echo "ass:".$assignNum;
+            //echo $assignNum;
+>>>>>>> FETCH_HEAD
             if($assignNum < $this->assignNumMax && $undel == 1){
                 $data['admin_id'] = $res_isLogin;
                 $conditionTemp = sprintf("1=1 and ctime>'%s' and ctime<'%s' and type='1' and state='1' and admin_id =''", $ctime, $ctimeend." 23:59:59");
                 $listAssign = $Model->where($conditionTemp)->order('ctime desc')->limit($this->assignNumMax-$assignNum)->select();
+<<<<<<< HEAD
 
+=======
+                //echo $conditionTemp;
+                //echo count($listAssign);
+>>>>>>> FETCH_HEAD
                 if ($listAssign) {
                     for ($i=0; $i < count($listAssign); $i++) {
                         $listTemp = $Model->where(" 1=1 and id='".$listAssign[$i]['id']."'")->save($data);
@@ -412,7 +501,11 @@ class PostController extends CommonController {
 
             $key ="post_view_count_total";
             $redis = S(array('type'=>'Redis'));
+<<<<<<< HEAD
             for($i=0; $i<$assignNum && $i<count($list); $i++){
+=======
+            for($i=0; $i<$assignNum; $i++){
+>>>>>>> FETCH_HEAD
                 //帖子总浏览次数
                 $listTemp = $redis->ZSCORE($key, $list[$i]['id']);
                 $list[$i]['view'] = $listTemp ? $listTemp : 0;
@@ -437,7 +530,10 @@ class PostController extends CommonController {
 
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD
     /**
     * 获取所有帖子(按时间[默认]/评论数/推荐数)
     **/
@@ -452,16 +548,23 @@ class PostController extends CommonController {
         $ctime = I('param.ctime',date('Y-m-d'));
         $ctimeend = I('param.ctimeend',date('Y-m-d'));
 
+<<<<<<< HEAD
         $type = I('param.type',-1);
         $comment = I('param.comment',-1);
         $recom = I('param.recom',-1);
         $view = I('param.view',-1);
         $Model = M('Post'); 
         $ModelView = M('PostView');
+=======
+        $comment = I('param.comment',-1);
+        $recom = I('param.recom',-1);
+        $Model = M('Post'); 
+>>>>>>> FETCH_HEAD
         $ModelAdmin = M('Admin');
         $ModelUser = M('User');
 
         $conditionTemp = sprintf(" 1=1 and ctime>'%s' and ctime<'%s' and type=1", $ctime, $ctimeend." 23:59:59");
+<<<<<<< HEAD
 
         //分类全部查看
         if ($type == 0) {
@@ -480,10 +583,15 @@ class PostController extends CommonController {
 
 
         $orderBy = '';
+=======
+        $orderBy = '';
+
+>>>>>>> FETCH_HEAD
         if($comment == 1){
             $orderBy = 'comment_count desc';
         }else if($recom == 1){
             $orderBy = 'recom_count desc';
+<<<<<<< HEAD
         }else if($view == 1){
             //从postview表中获取
             $orderBy = 'viewnum desc';
@@ -534,6 +642,8 @@ class PostController extends CommonController {
 
             $this->ajaxOutput($code, $msg, array('count'=>$allnum, 'list'=>$list));    
 
+=======
+>>>>>>> FETCH_HEAD
         }else{
             $orderBy = 'ctime desc';
         }
@@ -543,9 +653,12 @@ class PostController extends CommonController {
         if($list || $list == null){
             $code = 0;
             $msg = "suc";
+<<<<<<< HEAD
             if ($list == null) {
                 $list = Array();
             }
+=======
+>>>>>>> FETCH_HEAD
         }else{
             $list = Array();
             $code = 10001;
@@ -647,6 +760,7 @@ class PostController extends CommonController {
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
 
+<<<<<<< HEAD
         $LData['table_name'] = "Post";
         $LData['type'] = 1;
         $LData['admin_id'] = $res_isLogin;
@@ -659,11 +773,14 @@ class PostController extends CommonController {
             }
         }
 
+=======
+>>>>>>> FETCH_HEAD
         $id = I('param.id',-1);
         $Model = M('Post'); 
         if($id){
             $list = $Model->where("id='".$id."'")->select();
             if($list){
+<<<<<<< HEAD
                 $to_user_id = $list[0]['user_id'];
                 $data['essential_state'] = ($list[0]['essential_state']+1)%2;
                 if ($data['essential_state'] == 1) {
@@ -687,32 +804,53 @@ class PostController extends CommonController {
                         $this->isHotPost($id);
                     }
 
+=======
+                $data['essential_state'] = ($list[0]['essential_state']+1)%2;
+                //$data['audit_state'] = '2';
+                $list = $Model->where("id='".$id."'")->save($data);
+                if($list){
+                    $code = 0;
+                    $msg = "suc";
+>>>>>>> FETCH_HEAD
                 }else{
                     $list = Array();
                     $code = 10001;
                     $msg = "no data";
+<<<<<<< HEAD
 
                     $LData['code'] = $code;
                     $LData['msg'] = "用户发帖: id ".$id." title ".$list[0]['title']."  不存在, 设置为精华帖失败";
                 }
                 
+=======
+                }
+>>>>>>> FETCH_HEAD
             }else{
                 $list = Array();
                 $code = 10001;
                 $msg = "no data";
+<<<<<<< HEAD
 
                 $LData['code'] = $code;
                 $LData['msg'] = "用户发帖: id ".$id." title ".$list[0]['title']." 不存在, 查找用户贴失败";
+=======
+>>>>>>> FETCH_HEAD
             }
         }else{
             $list = Array();
             $code = 20403;
+<<<<<<< HEAD
             $msg = "无帖子ID参数";
             
             $LData['code'] = $code;
             $LData['msg'] = "用户发帖: id ".$id." 参数错误,设置为精华帖失败";
         }
         aLog($LData);
+=======
+            $msg = "post id wrong";
+        }
+
+>>>>>>> FETCH_HEAD
         $this->ajaxOutput($code, $msg, array('list'=>$list));
     }
 
@@ -734,10 +872,13 @@ class PostController extends CommonController {
             if($list){
                 //$data['audit_state'] = '2';
                 $data['sticky_state'] = ($list[0]['sticky_state']+1)%2;
+<<<<<<< HEAD
                 if ($data['sticky_state'] == 1) {
                     $data['hot_state'] = 1;
                 }
                 
+=======
+>>>>>>> FETCH_HEAD
                 $list = $Model->where("id='".$id."'")->save($data);
                 if($list){
                     $code = 0;
@@ -758,6 +899,7 @@ class PostController extends CommonController {
             $msg = "post id wrong";
         }
 
+<<<<<<< HEAD
         //取消置顶时，判断热帖
         if ($code == 0 && $data['sticky_state'] == 0) {
             $this->isHotPost($id);
@@ -782,6 +924,11 @@ class PostController extends CommonController {
         }
     }
 
+=======
+        $this->ajaxOutput($code, $msg, array('list'=>$list));
+    }
+
+>>>>>>> FETCH_HEAD
 
     /**
     * 首推帖子
@@ -793,6 +940,7 @@ class PostController extends CommonController {
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
 
+<<<<<<< HEAD
         $pageName = I('param.pagename',-1);
         if($pageName != "-1"){
             $is_allow = pageAuthority($pageName, $res_isLogin);
@@ -801,24 +949,32 @@ class PostController extends CommonController {
             }
         }
 
+=======
+>>>>>>> FETCH_HEAD
         $id = I('param.id',-1);
         $Model = M('Post'); 
         if($id){
             $list = $Model->where("id='".$id."'")->select();
             if($list){
                 //$data['audit_state'] = '2';
+<<<<<<< HEAD
                 $to_user_id = $list[0]['user_id'];
+=======
+>>>>>>> FETCH_HEAD
                 $data['index_recom_state'] = ($list[0]['index_recom_state']+1)%2;
                 $list = $Model->where("id='".$id."'")->save($data);
                 if($list){
                     $code = 0;
                     $msg = "suc";
+<<<<<<< HEAD
 
                     if($data['index_recom_state'] == 1){
                        // 发送站内信
                         $user_id = $res_isLogin;
                         $this->sendLetters("您的发帖已经被我们首页推荐，再接再厉！", $user_id, $to_user_id);
                     }                    
+=======
+>>>>>>> FETCH_HEAD
                 }else{
                     $list = Array();
                     $code = 10001;
@@ -838,6 +994,7 @@ class PostController extends CommonController {
         $this->ajaxOutput($code, $msg, array('list'=>$list));
     }
 
+<<<<<<< HEAD
 
     public function sendLetters ($title, $user_id, $to_user_id) {
 
@@ -872,6 +1029,8 @@ class PostController extends CommonController {
         }
     }
 
+=======
+>>>>>>> FETCH_HEAD
     /**
     * 通过审核
     **/
@@ -887,6 +1046,7 @@ class PostController extends CommonController {
         if($id){
             $list = $Model->where("id='".$id."'")->select();
             if($list){
+<<<<<<< HEAD
                 $data['audit_state'] = I('param.audit_state',-1);
                 if($data['audit_state'] == "0"){
                     $data['audit_state'] = 1;
@@ -897,14 +1057,22 @@ class PostController extends CommonController {
                 }else{
                     $data['audit_state'] = 1;
                 }
+=======
+                $data['audit_state'] = '2';
+>>>>>>> FETCH_HEAD
                 $list = $Model->where("id='".$id."'")->save($data);
                 if($list){
                     $code = 0;
                     $msg = "suc";
                 }else{
                     $list = Array();
+<<<<<<< HEAD
                     $code = 0;
                     $msg = "save no data";
+=======
+                    $code = 10001;
+                    $msg = "no data";
+>>>>>>> FETCH_HEAD
                 }
             }else{
                 $list = Array();
@@ -1016,7 +1184,11 @@ class PostController extends CommonController {
         $this->ajaxOutput($code, $msg, array('list'=>$list));
     }
 
+<<<<<<< HEAD
    //吧贴管理按用户查找
+=======
+    //
+>>>>>>> FETCH_HEAD
     public function search(){
 
         $value = I('param.value',-1);
@@ -1026,6 +1198,7 @@ class PostController extends CommonController {
             
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
+<<<<<<< HEAD
 
         $ctime = I('param.ctime',date('Y-m-d'));
         $ctimeend = I('param.ctimeend',date('Y-m-d'));
@@ -1070,6 +1243,9 @@ class PostController extends CommonController {
         }
 
 
+=======
+        
+>>>>>>> FETCH_HEAD
         //user表查发帖用户id
         $listTemp = $ModelUser->where("name='".$value."'")->select();
         if($listTemp){
@@ -1078,8 +1254,12 @@ class PostController extends CommonController {
             
             $num = $Model->where("user_id='".$listTemp[0]['id']."'")->count();
             //post表插用户所有贴， admin处理人
+<<<<<<< HEAD
             $this->condition = $this->condition." and user_id='".$listTemp[0]['id']."'";
             $list = $Model->where($this->condition)->page($this->curpage, $this->pagenum)->select();
+=======
+            $list = $Model->where("user_id='".$listTemp[0]['id']."'")->page($this->curpage, $this->pagenum)->select();
+>>>>>>> FETCH_HEAD
             if($list){
                 $code = 0;
                 $msg = "suc";
@@ -1108,6 +1288,7 @@ class PostController extends CommonController {
                     }
                     
                 }
+<<<<<<< HEAD
             }else if($list == null){
                 $list = Array();
                 $code = 0;
@@ -1133,6 +1314,24 @@ class PostController extends CommonController {
 
 
 
+=======
+            }else{
+                $list = Array();
+                $code = 10001;
+                $msg = "no data";
+            }
+
+        }else{
+            $list = Array();
+            $code = 10001;
+            $msg = "no data";
+        }
+
+        $this->ajaxOutput($code, $msg, array('count'=>$num,'list'=>$list));    
+    }
+
+
+>>>>>>> FETCH_HEAD
     public function reIndexStock($id, $uid){
         // 初始化一个 cURL 对象 
         $curl = curl_init(); 

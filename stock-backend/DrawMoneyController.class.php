@@ -4,12 +4,9 @@ use Think\Controller;
 import('Org.Util.Date');
 class DrawMoneyController extends CommonController {
     
-<<<<<<< HEAD
     private $ctime = "";
     private $ctimeend = "";
 
-=======
->>>>>>> FETCH_HEAD
     //根据提款记录的状态筛选
     public function getDrawMoneyList(){
         $res_isLogin = $this->isLogin();
@@ -28,39 +25,23 @@ class DrawMoneyController extends CommonController {
         $state = I('param.state',-1);
         $this->curpage = I('param.curpage',1);
         $this->pagenum = I('param.pagenum',10);
-<<<<<<< HEAD
         $this->ctime = I('param.ctime',date('Y-m-d'));
         $this->ctimeend = I('param.ctimeend',date('Y-m-d'));
 
         $Model = M('DrawMoney');
         $ModelUser = M('User');
-=======
-        $ctime = I('param.ctime',date('Y-m-d'));
-        $ctimeend = I('param.ctimeend',date('Y-m-d'));
-
-        $Model = M('DrawMoney');
->>>>>>> FETCH_HEAD
 
         $condition = "1=1";
         if($state != "-1"){
           $condition = $condition." and state='".$state."'";
         }
 
-<<<<<<< HEAD
         if($this->ctime){
           $condition = $condition." and ctime>='".$this->ctime."'";
         }
 
         if($this->ctimeend){
           $condition = $condition." and ctime<='".$this->ctimeend." 23:59:59'";
-=======
-        if($ctime){
-          $condition = $condition." and ctime>='".$ctime."'";
-        }
-
-        if($ctimeend){
-          $condition = $condition." and ctime<='".$ctimeend." 23:59:59'";
->>>>>>> FETCH_HEAD
         }
 
         $allnum = $Model->where($condition)->count();
@@ -71,7 +52,6 @@ class DrawMoneyController extends CommonController {
           $msg = "suc";
           if($list == null){
             $list = array();
-<<<<<<< HEAD
           }else{
             $num = count($list);
             for ($i=0; $i < $num; $i++) { 
@@ -81,14 +61,10 @@ class DrawMoneyController extends CommonController {
             }
           }
 
-=======
-          }
->>>>>>> FETCH_HEAD
         }else{
           $code = -1;
           $msg = "sql failed";
         }
-<<<<<<< HEAD
 
 
         //全部、未审核、已审核（待汇）、拒绝、已汇出
@@ -154,18 +130,12 @@ class DrawMoneyController extends CommonController {
 
 
 
-=======
-        $this->ajaxOutput($code, $msg, array('count'=>$allnum, 'list'=>$list));
-    }
-
->>>>>>> FETCH_HEAD
     //搜索提款记录
     public function searchUserDrawMoneyInfo() {
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
-<<<<<<< HEAD
 
         $pageName = I('param.pagename',-1);
         if($pageName != "-1"){
@@ -176,8 +146,6 @@ class DrawMoneyController extends CommonController {
         }
 
         
-=======
->>>>>>> FETCH_HEAD
         $Model = M('DrawMoney');
 
         $this->curpage = I('param.curpage',1);
@@ -188,10 +156,6 @@ class DrawMoneyController extends CommonController {
             $this->condition = $this->condition." and user_name like '%".$title."%'";
         }
 
-<<<<<<< HEAD
-=======
-//        echo $this->condition;
->>>>>>> FETCH_HEAD
         $list = $Model->where($this->condition)->select();
         if($list){
             $code = 0;
@@ -205,7 +169,6 @@ class DrawMoneyController extends CommonController {
         $this->ajaxOutput($code, $msg, array('count'=>count($list), 'list'=>$list));
     }    
  
-<<<<<<< HEAD
 
         //审核提款记录
     public function auditDrawMoneyRecord(){
@@ -213,16 +176,11 @@ class DrawMoneyController extends CommonController {
         $draw = D('DrawMoney');
         $LetterInfo = D('LetterInfo');
 
-=======
-    //审核提款记录
-    public function auditDrawMoneyRecord(){
->>>>>>> FETCH_HEAD
         $res_isLogin = $this->isLogin();
         if(!$res_isLogin){
             $this->ajaxOutput(20401, 'login fail', array('list'=>Array()));
         }
 
-<<<<<<< HEAD
         $pageName = I('param.pagename',-1);
         if($pageName != "-1"){
             $is_allow = pageAuthority($pageName, $res_isLogin);
@@ -405,43 +363,6 @@ class DrawMoneyController extends CommonController {
             $LData['msg'] = "drawmoney: [提款管理页面: order_id:".$data['order_id']." 查找失败]";
             aLog($LData);
             $this->ajaxOutput($code, $msg, array('count'=>0, 'list'=>array()));
-=======
-        $state = I('param.state',-1);
-        $uid = I('param.id',-1);
-        
-        if($uid){
-          $condition = " id='".$uid."'";
-        }
-
-        $data['state'] = $state;
-        $Model = M('DrawMoney');
-
-        //未审核不可汇出操作
-        if($state == "3"){
-          $list = $Model->where($condition)->select();
-          if($list && $list[0]['state'] != "1"){
-            $code = 20501;      
-            $msg = "no audit";
-          }else{
-            $code = -1;
-            $msg = "audit sql failed";
-          }
-          $this->ajaxOutput($code, $msg, array('count'=>count($list), 'list'=>$list));
-        }else{
-          $list = $Model->where($condition)->save($data);
-          if($list || $list == null){
-            $code = 0;
-            $msg = "suc";
-            if($list == null){
-              $list = array();
-            }
-
-          }else{
-            $code = -1;
-            $msg = "audit sql failed";
-          }
-          $this->ajaxOutput($code, $msg, array('count'=>count($list), 'list'=>$list));
->>>>>>> FETCH_HEAD
         }
     }
 

@@ -19,17 +19,12 @@ class AdminController extends CommonController {
         $list = $adminModel->where($condition)->select();
         if($list){
 			$code = 0;
-<<<<<<< HEAD
 			$msg = "登陆成功";
-=======
-			$msg = "suc";
->>>>>>> FETCH_HEAD
 			session('uname', $name);
 			session('user_id', $list[0]['user_id']);
 		}else{
             $list = Array();
 			$code = 20401;
-<<<<<<< HEAD
 			$msg = "用户名:".$name." 或者密码 ".$pwd." 错误";
 		}
 
@@ -40,10 +35,6 @@ class AdminController extends CommonController {
         $LData['msg'] = "登陆验证: 用户 ".$name." 执行登陆验证 ".$msg;
         aLog($LData);
 
-=======
-			$msg = $name." or ".$pwd." is wrong";
-		}
->>>>>>> FETCH_HEAD
         $this->ajaxOutput($code, $msg, array('list'=>$list));
     }
 
@@ -82,7 +73,6 @@ class AdminController extends CommonController {
     public function getUser() {
         $adminModel = M('Admin');
         $condition = "1=1 and (level='1' or level='2' or level='3')";
-<<<<<<< HEAD
         $all = I('param.all',-1);
         if($all && $all != null && $all != -1){
            $condition = "1=1"; 
@@ -101,12 +91,6 @@ class AdminController extends CommonController {
                 $list[$i]['name'] = $listdata[$i]['name'];
                 $list[$i]['chinaname'] = $listdata[$i]['chinaname'];
             }
-=======
-        $list = $adminModel->where($condition)->select();
-        if($list){
-            $code = 0;
-            $msg = "suc";
->>>>>>> FETCH_HEAD
         }else{
             $list = Array();
             $code = 10001;

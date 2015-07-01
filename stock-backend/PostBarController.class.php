@@ -3,7 +3,6 @@ namespace Home\Controller;
 use Home\Controller\CommonController;
 
 /**
-<<<<<<< HEAD
  * “帖子”控制器类。
  */ 
 class PostController extends CommonController {
@@ -861,9 +860,4 @@ class PostController extends CommonController {
     }
 
 
-=======
- * “帖子标签”控制器类。
- */ 
-class PostBarController extends CommonController {
->>>>>>> FETCH_HEAD
 }
